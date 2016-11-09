@@ -19,6 +19,7 @@ var gfs;
 mongoose.connection.once('open', function () {
   Grid.mongo = mongoose.mongo;
   global.gfs = Grid(mongoose.connection.db);
+  console.log('DB connection established!');
 
   // all set!
 })
