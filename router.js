@@ -27,7 +27,7 @@ module.exports = function(app) {
   apiRoutes.post('/otantik', authController.auth, authController.isTokenValid);
   apiRoutes.post('/university', authController.auth, universityController.addUniversity);
   apiRoutes.post('/user',  authController.auth, userController.getUser);
-  apiRoutes.post('/upload', authController.auth, upload.single("file"), fileController.uploadFile);
+  apiRoutes.post('/upload', [authController.auth, upload.single("file")], fileController.uploadFile);
   apiRoutes.get('/download', fileController.getFile);
 
   app.use('/api', apiRoutes);

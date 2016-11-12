@@ -31,3 +31,12 @@ exports.getUser = function(req,res,next){
     }
   });
 };
+
+exports.editUser = function(req, res, next){
+  console.log("Get-User request received from:");
+  if(!req.user._id){
+    console.log("success: false, details: Autherization failed.");
+    return res.status(401).send({"success":false, "detail": "Autherization failed!"});
+  }
+  
+}
