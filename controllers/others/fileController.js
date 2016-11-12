@@ -41,6 +41,7 @@ exports.uploadFile = function(req,res){
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
         }
+        console.log(docs);
         ownerid = docs._id;
         oldimg = docs.photo;
         console.log("oldimg"+ oldimg+ " "+docs.photo);
