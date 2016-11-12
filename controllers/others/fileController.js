@@ -57,23 +57,9 @@ exports.uploadFile = function(req,res,next){
       read_stream.pipe(writeStream);
 
       writeStream.on('close', function(file) {
-        newimg = file._id;
-        console.log("newimg"+ newimg+ " "+file._id);
-        if(oldimg){
-          console.log("triying to remove "+oldimg);
-          gfs.remove({_id: oldimg}, function(err){
-            if(err){
-              return console.log("couldnt delete");
 
-            console.log("removed");
-            }
-          });
-        }
-        console.log("ownerid "+ownerid);
-        User.update({_id: ownerid}, {$set: {photo: newimg}});
         writeStream.end();
-        fs.unlink(path);
-        return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+
       });
 
       break;
@@ -83,6 +69,22 @@ exports.uploadFile = function(req,res,next){
       break;
   }
 
+  newimg = file._id;
+  console.log("newimg"+ newimg+ " "+file._id);
+  if(oldimg){
+    console.log("triying to remove "+oldimg);
+    gfs.remove({_id: oldimg}, function(err){
+      if(err){
+        return console.log("couldnt delete");
+
+      console.log("removed");
+      }
+    });
+  }
+  console.log("ownerid "+ownerid);
+  User.update({_id: ownerid}, {$set: {photo: newimg}});
+  fs.unlink(path);
+  return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
 
 
 };
