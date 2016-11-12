@@ -9,12 +9,11 @@ exports.uploadFile = function(req,res){
 
   console.log("Upload request recieved.");
   console.log(req.file.filename);
-  return res.status(200).send("success");
   /*if(!req.user._id){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
   }*/
-  /*var operation = req.body.operation;
+  var operation = req.body.operation;
 
   if(!operation){
     console.log("success: false, details: operation was not set!");
@@ -57,7 +56,7 @@ exports.uploadFile = function(req,res){
 
       read_stream.pipe(writeStream);
 
-    /*writeStream.on('close', function(file) {
+    writeStream.on('close', function(file) {
 
         writeStream.end();
 
@@ -88,7 +87,7 @@ exports.uploadFile = function(req,res){
 
 
 
-*/
+
 };
 
 exports.getFile = function(req,res,next){
