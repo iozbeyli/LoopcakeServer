@@ -62,7 +62,7 @@ exports.uploadFile = function(req,res){
 
       });
 
-      newimg = file._id;
+      newimg = req.file._id;
       console.log("newimg"+ newimg+ " "+file._id);
       if(oldimg){
         console.log("triying to remove "+oldimg);
