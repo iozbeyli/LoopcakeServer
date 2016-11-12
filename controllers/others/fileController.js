@@ -33,7 +33,7 @@ exports.uploadFile = function(req,res){
       var ownermail = req.body.mail;
       var oldimg;
       var ownerid;
-      console.log("operation 1 started");
+      console.log("operation 1 started"+ ownermail);
 
       User.find({email: ownermail}, {_id: 1, photo: 1}, function (err, docs) {
         if(err){
