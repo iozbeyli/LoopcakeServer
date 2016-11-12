@@ -35,13 +35,13 @@ exports.uploadFile = function(req,res){
       var ownerid;
       console.log("operation 1 started"+ ownermail);
 
-      User.find({email: ownermail}, {_id: 1, photo: 1}, function (err, docs) {
+      User.find({"email": ownermail}, {_id: 1, photo: 1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
         }
-        console.log(docs);
+        console.log("docs: "+docs);
         ownerid = docs._id;
         oldimg = docs.photo;
         console.log("oldimg"+ oldimg+ " "+docs.photo);
