@@ -63,7 +63,7 @@ exports.uploadFile = function(req,res){
       });
 
       newimg = req.file._id;
-      console.log("newimg"+ newimg+ " "+file._id);
+      console.log("newimg"+ newimg+ " "+req.file._id);
       if(oldimg){
         console.log("triying to remove "+oldimg);
         gfs.remove({_id: oldimg}, function(err){
