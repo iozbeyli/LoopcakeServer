@@ -5,7 +5,7 @@ const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
 
 
-exports.uploadFile = function(req,res,next){
+exports.uploadFile = function(req,res){
 
   console.log("Upload request recieved.");
   console.log(req.file.filename);
