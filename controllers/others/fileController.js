@@ -47,38 +47,34 @@ exports.uploadFile = function(req,res){
         console.log("oldimg"+ oldimg+ " "+docs.photo);
         console.log("oldimg"+ ownerid);
 
-      });
-
-      var read_stream =  fs.createReadStream(path);
-      var writeStream = gfs.createWriteStream({
-        filename: filename,
-        ownerid: ownerid
-      });
-
-      read_stream.pipe(writeStream);
-
-    writeStream.on('close', function(file) {
-
-        writeStream.end();
-
-      });
-
-      newimg = req.file._id;
-      console.log("newimg"+ newimg+ " "+req.file._id);
-      if(oldimg){
-        console.log("triying to remove "+oldimg);
-        gfs.remove({_id: oldimg}, function(err){
-          if(err){
-            return console.log("couldnt delete");
-
-          console.log("removed");
-          }
+        var read_stream =  fs.createReadStream(path);
+        var writeStream = gfs.createWriteStream({
+          filename: filename,
+          ownerid: ownerid
         });
-      }
-      console.log("ownerid "+ownerid);
-      User.update({_id: ownerid}, {$set: {photo: newimg}});
-      fs.unlink(path);
-      return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+
+        read_stream.pipe(writeStream);
+
+        writeStream.on('close', function(file) {
+
+          writeStream.end();
+          newimg = req.file._id;
+          console.log("newimg"+ newimg+ " "+req.file._id);
+          if(oldimg){
+            console.log("triying to remove "+oldimg);
+            gfs.remove({_id: oldimg});
+          }
+          console.log("ownerid "+ownerid);
+          User.update({_id: ownerid}, {$set: {photo: newimg}});
+          fs.unlink(path);
+          return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+
+        });
+
+
+      });
+
+
       break;
     default:
       console.log("success: false, details: Unknown Operation!");
