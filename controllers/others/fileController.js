@@ -56,11 +56,11 @@ exports.uploadFile = function(req,res,next){
 
       read_stream.pipe(writeStream);
 
-      writeStream.on('close', function(file) {
+    /*writeStream.on('close', function(file) {
 
         writeStream.end();
 
-      });
+      });*/
 
       newimg = file._id;
       console.log("newimg"+ newimg+ " "+file._id);
