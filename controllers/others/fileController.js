@@ -9,10 +9,10 @@ exports.uploadFile = function(req,res,next){
 
   console.log("Upload request recieved.");
   console.log(req.body);
-  if(!req.user._id){
+  /*if(!req.user._id){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
-  }
+  }*/
   var operation = req.body.operation;
 
   if(!operation){
@@ -30,8 +30,9 @@ exports.uploadFile = function(req,res,next){
       var filename = req.file.filename;
       var path = req.file.path;
       var type = req.file.mimetype;
-      var ownerid = req.user._id;
+      var ownermail = req.body.mail;
       var oldimg;
+      var ownerid;
       console.log("operation 1 started");
 
       User.find({_id: ownerid}, {photo: 1}, function (err, docs) {
@@ -40,9 +41,10 @@ exports.uploadFile = function(req,res,next){
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
         }
-
+        ownerid = docs._id;
         oldimg = docs.photo;
         console.log("oldimg"+ oldimg+ " "+docs.photo);
+        console.log("oldimg"+ ownerid);
 
       });
 
