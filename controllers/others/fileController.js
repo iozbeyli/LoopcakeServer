@@ -35,7 +35,7 @@ exports.uploadFile = function(req,res){
       var ownerid;
       console.log("operation 1 started");
 
-      User.find({_id: ownerid}, {photo: 1}, function (err, docs) {
+      User.find({email: ownermail}, {photo: 1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
