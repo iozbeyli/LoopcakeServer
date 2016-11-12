@@ -13,7 +13,7 @@ exports.uploadFile = function(req,res,next){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
   }*/
-  var operation = req.body.operation;
+  /*var operation = req.body.operation;
 
   if(!operation){
     console.log("success: false, details: operation was not set!");
@@ -60,7 +60,7 @@ exports.uploadFile = function(req,res,next){
 
         writeStream.end();
 
-      });*/
+      });
 
       newimg = file._id;
       console.log("newimg"+ newimg+ " "+file._id);
@@ -87,7 +87,7 @@ exports.uploadFile = function(req,res,next){
 
 
 
-
+*/
 };
 
 exports.getFile = function(req,res,next){
