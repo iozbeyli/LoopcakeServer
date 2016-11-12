@@ -1,5 +1,5 @@
 
-const Index = require('./../../index');
+//const Index = require('./../../index');
 //const User = require('./../../models/User');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
@@ -8,7 +8,8 @@ const fs = require('fs');
 exports.uploadFile = function(req,res,next){
 
   console.log("Upload request recieved.");
-  console.log(req.body);
+  console.log(req.file.filename);
+  return res.status(200).send("success");
   /*if(!req.user._id){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
