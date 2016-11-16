@@ -15,6 +15,7 @@ exports.getUser = function(req,res,next){
     query = req.body;
   }
 
+  console.log(query);
   User.find(query, {hash: 0, salt: 0}, function (err, docs) {
     if(err){
       console.log("Internal db error");
@@ -38,5 +39,5 @@ exports.editUser = function(req, res, next){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
   }
-  
+
 }

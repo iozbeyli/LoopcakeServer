@@ -31,11 +31,12 @@ exports.uploadFile = function(req,res){
       var path = req.file.path;
       var type = req.file.mimetype;
       var ownermail = req.body.mail;
+
       var oldimg;
       var ownerid;
       console.log("operation 1 started"+ ownermail);
 
-      User.find({"email": ownermail}, function (err, docs) {
+      User.findOne({"email": ownermail}, {_id: 1, photo: 1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
@@ -44,8 +45,7 @@ exports.uploadFile = function(req,res){
         console.log("docs: "+docs);
         ownerid = docs._id;
         oldimg = docs.photo;
-        console.log("oldimg"+ oldimg+ " "+docs.photo);
-        console.log("oldimg"+ ownerid);
+        console.log("oldimg id: "+ oldimg);
 
         var read_stream =  fs.createReadStream(path);
         var writeStream = gfs.createWriteStream({
@@ -56,18 +56,28 @@ exports.uploadFile = function(req,res){
         read_stream.pipe(writeStream);
 
         writeStream.on('close', function(file) {
-
+          newimg = file._id;
+          console.log("newimg id: "+ newimg);
           writeStream.end();
-          newimg = req.file._id;
-          console.log("newimg"+ newimg+ " "+req.file._id);
+
           if(oldimg){
             console.log("triying to remove "+oldimg);
-            gfs.remove({_id: oldimg});
-          }
+            gfs.remove({_id: oldimg}, function(err){
+              if(err) return console.log(err)
+              console.log("ownerid "+ownerid);
+              User.update({_id: ownerid}, {$set: {photo: newimg}}, function(err){
+                fs.unlink(path);
+                return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+              });
+            });
+          }else{
           console.log("ownerid "+ownerid);
-          User.update({_id: ownerid}, {$set: {photo: newimg}});
-          fs.unlink(path);
-          return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+          User.update({_id: ownerid}, {$set: {photo: newimg}}, function(err){
+            if(err) return console.log(err)
+            fs.unlink(path);
+            return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+          });
+        }
 
         });
 
