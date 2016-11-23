@@ -67,7 +67,7 @@ exports.uploadFile = function(req,res){
               console.log("ownerid "+ownerid);
               User.update({_id: ownerid}, {$set: {photo: newimg}}, function(err){
                 fs.unlink(path);
-                return res.status(200).send({"success":true, "detail": "Profile Photo is changed!"});
+                return res.status(200).send({"success":true, "detail": newimg});
               });
             });
           }else{
