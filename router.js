@@ -4,6 +4,7 @@ const authController = require('./controllers/authentication/authController');
 const universityController = require('./controllers/others/universityController');
 const fileController = require('./controllers/others/fileController');
 const userController = require('./controllers/others/userController');
+const repo = require('./controllers/others/repo');
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, __dirname+'/uploads/');
@@ -28,6 +29,8 @@ module.exports = function(app) {
   apiRoutes.post('/university', authController.auth, universityController.addUniversity);
   apiRoutes.post('/user',  authController.auth, userController.getUser);
   apiRoutes.post('/upload', upload.single("file"), fileController.uploadFile);
+  apiRoutes.post('/addRepo', authController.auth, repo.add);
+  apiRoutes.post('/getRepo', authController.auth, repo.get);
   apiRoutes.get('/download', fileController.getFile);
 
   app.use('/api', apiRoutes);

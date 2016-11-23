@@ -6,6 +6,10 @@ const mongoose = require('mongoose'),
       Thread = require('./Thread'),
       Repo = require('./Repo');
 
+const RepoSchema = new Schema({
+  id: {type:mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
+  name: String
+})
 const UserSchema = new Schema({
         name: {type: String, required: true},
         surname: {type: String, required: false},
@@ -14,10 +18,11 @@ const UserSchema = new Schema({
         type: {type: String, required:false},
         photo: {type: mongoose.SchemaTypes.ObjectId},
         threads: [{type:mongoose.SchemaTypes.ObjectId, ref: 'Thread'}],
-        repos: [{type:mongoose.SchemaTypes.ObjectId, ref: 'Repo'}],
+        repos: [RepoSchema],
         hash: String,
         salt: String
 });
+
 
 UserSchema.methods.setPassword = function(password){
   this.salt = crypto.randomBytes(16).toString('hex');
