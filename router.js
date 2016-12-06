@@ -4,6 +4,7 @@ const authController = require('./controllers/authentication/authController');
 const universityController = require('./controllers/others/universityController');
 const fileController = require('./controllers/others/fileController');
 const userController = require('./controllers/others/userController');
+const course = require('./controllers/others/course');
 const repo = require('./controllers/others/repo');
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
