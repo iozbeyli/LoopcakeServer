@@ -34,7 +34,7 @@ module.exports = function(app) {
   apiRoutes.post('/getRepo', authController.auth, repo.get);
   apiRoutes.get('/download', fileController.getFile);
   apiRoutes.post('/addCourse', course.addCourse);
-  apiRoutes.post('/course', course.getCourse);
+  apiRoutes.post('/course', authController.auth, course.getCourse);
 
   app.use('/api', apiRoutes);
 }
