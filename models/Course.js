@@ -15,7 +15,8 @@ const CourseSchema = new mongoose.Schema({
   year: {type: Number},
   term: {type: String},
   projects: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Project'}],
-  details: {type: String}
+  details: {type: String},
+  syllabus: {type: mongoose.SchemaTypes.ObjectId}
 });
 
 module.exports = mongoose.model('Course', CourseSchema);
