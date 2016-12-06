@@ -86,7 +86,7 @@ exports.uploadFile = function(req,res){
 
 
       break;
-    case '1':
+    case '2':
       var filename = req.file.filename;
       var path = req.file.path;
       var type = req.file.mimetype;
