@@ -5,7 +5,7 @@ exports.addCourse = function(req,res,next){
   console.log(req.body);
   const course = new Course(req.body);
 
-  course.save(err => {
+  Course.save(err => {
     if (err) {
       console.log("Internal db error");
       console.log(err);
@@ -40,7 +40,7 @@ exports.getCourse = function(req,res,next){
 
 
       console.log(query);
-      Course.find(query, {name: 1, department: 1, code: 1, year: 1, term: 1}, function (err, docs) {
+      Course.find(query, {_id: 1, name: 1, department: 1, code: 1, year: 1, term: 1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
@@ -63,7 +63,7 @@ exports.getCourse = function(req,res,next){
 
 
       console.log(query);
-      Repo.find(query,  function (err, docs) {
+      Course.find(query,  function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
