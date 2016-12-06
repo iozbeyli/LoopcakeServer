@@ -33,8 +33,8 @@ module.exports = function(app) {
   apiRoutes.post('/addRepo', authController.auth, repo.add);
   apiRoutes.post('/getRepo', authController.auth, repo.get);
   apiRoutes.get('/download', fileController.getFile);
-  apiRoutes.get('/addCourse', course.addCourse);
-  apiRoutes.get('/course', course.getCourse);
+  apiRoutes.post('/addCourse', course.addCourse);
+  apiRoutes.post('/course', course.getCourse);
 
   app.use('/api', apiRoutes);
 }
