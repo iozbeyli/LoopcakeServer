@@ -5,7 +5,7 @@ exports.addCourse = function(req,res,next){
   console.log(req.body);
   const course = new Course(req.body);
 
-  Course.save(err => {
+  course.save(err => {
     if (err) {
       console.log("Internal db error");
       console.log(err);
