@@ -1,4 +1,6 @@
 const Course = require('./../../models/Course');
+const User = require('./../../models/User');
+const CourseStudent = require('./../../models/CourseStudent');
 
 exports.addCourse = function(req,res,next){
   console.log("Add Course Request Received");
@@ -15,6 +17,69 @@ exports.addCourse = function(req,res,next){
       return res.status(200).send({"success":true, "details": "Course added."});
     }
   })
+};
+
+exports.addStudents = function(req,res,next){
+  console.log("Add Students Request Received");
+  console.log(req.body.students);
+  var studentList = req.body.students.split(",");
+  var courseid = req.body.courseid;
+
+
+  for (var j = 0; j < studentList.length; j++) {
+    var studentMail = studentList[j];
+    User.findOne({"email": studentMail}, {_id: 1}, function (err, docs) {
+      if(err){
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
+      }
+      var temp = {courseID: courseid, studentID: docs._id, isAssistant: false};
+
+      var coSt = new CourseStudent(temp);
+
+      coSt.save(err => {
+        if (err) {
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+        }
+      })
+
+    });
+
+  }
+  console.log("success: true, details: Students are added.");
+  return res.status(200).send({"success":true, "details": "Students are added."});
+
+};
+
+exports.getStudentList = function(req,res,next){
+  console.log("Add Students Request Received");
+  console.log(req.body);
+  var query = {};
+  query.courseID = req.body.courseid;
+
+  CourseStudent.find(query,{studentID: 1},  function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    User.find(query, {_id: {$in: [docs]}}, {_id: 1, name: 1, surname: 1, universityID: 1}, function (err, result) {
+      if(err){
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+      }
+
+      console.log("success: true, details: Students are listed.");
+      return res.status(200).send({"success":true, "details":+result});
+    });
+
+  });
+
+
 };
 
 

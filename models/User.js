@@ -4,12 +4,14 @@ const mongoose = require('mongoose'),
       Schema = mongoose.Schema,
       University = require('./University'),
       Thread = require('./Thread'),
+      Course = require('./Course'),
       Repo = require('./Repo');
 
 const RepoSchema = new Schema({
   id: {type:mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
   name: String
 })
+
 const UserSchema = new Schema({
         name: {type: String, required: true},
         surname: {type: String, required: false},
