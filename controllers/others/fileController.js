@@ -1,6 +1,7 @@
 
 //const Index = require('./../../index');
 const User = require('./../../models/User');
+const Course = require('./../../models/Course');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
 const request = require('superagent');
