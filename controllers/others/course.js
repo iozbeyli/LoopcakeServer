@@ -44,13 +44,14 @@ exports.addStudents = function(req,res,next){
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
         }
+        console.log("success: true, details: Students are added.");
+        return res.status(200).send({"success":true, "details": "Students are added."});
       })
 
     });
 
   }
-  console.log("success: true, details: Students are added.");
-  return res.status(200).send({"success":true, "details": "Students are added."});
+
 
 };
 
