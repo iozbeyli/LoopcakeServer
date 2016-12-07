@@ -6,6 +6,7 @@ const fileController = require('./controllers/others/fileController');
 const userController = require('./controllers/others/userController');
 const course = require('./controllers/others/course');
 const repo = require('./controllers/others/repo');
+const announcement = require('./controllers/others/announcementController');
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, __dirname+'/uploads/');
@@ -35,6 +36,9 @@ module.exports = function(app) {
   apiRoutes.get('/download', fileController.getFile);
   apiRoutes.post('/addCourse', course.addCourse);
   apiRoutes.post('/course', authController.auth, course.getCourse);
+  apiRoutes.post('/announce', authController.auth, announcement.announce);
+  apiRoutes.post('/getAnnounce', authController.auth, announcement.getAnnouncement);
+
 
   app.use('/api', apiRoutes);
 }
