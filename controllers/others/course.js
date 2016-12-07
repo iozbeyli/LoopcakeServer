@@ -56,7 +56,7 @@ exports.addStudents = function(req,res,next){
 };
 
 exports.getStudentList = function(req,res,next){
-  console.log("Add Students Request Received");
+  console.log("Get-Student-List Request Received");
   console.log(req.body);
   var query = {};
   query.courseID = req.body.courseid;
