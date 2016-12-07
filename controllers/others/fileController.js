@@ -128,14 +128,14 @@ exports.uploadFile = function(req,res){
             gfs.remove({_id: oldPDF}, function(err){
               if(err) return console.log(err);
 
-              User.update({_id: courseID}, {$set: {photo: newPDF}}, function(err){
+              User.update({_id: courseID}, {$set: {syllabus: newPDF}}, function(err){
                 fs.unlink(path);
                 return res.status(200).send({"success":true, "detail": newPDF});
               });
             });
           }else{
           console.log("ownerid "+courseID);
-          User.update({_id: courseID}, {$set: {photo: newPDF}}, function(err){
+          User.update({_id: courseID}, {$set: {syllabus: newPDF}}, function(err){
             if(err) return console.log(err)
             fs.unlink(path);
             return res.status(200).send({"success":true, "detail": newPDF});
