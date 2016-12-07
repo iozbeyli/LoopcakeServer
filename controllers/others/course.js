@@ -67,7 +67,11 @@ exports.getStudentList = function(req,res,next){
       console.log(err);
       return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
     }
-    User.find({_id: {$in: [docs]}}, {_id: 1, name: 1, surname: 1, universityID: 1}, function (err, result) {
+    var result = [];
+    for(var i=0; i<docs.length; i++){
+      result[i]._id = docs[i].studentID;
+    }
+    User.find({_id: {$in: [result]}}, {_id: 1, name: 1, surname: 1, universityID: 1}, function (err, result) {
       if(err){
         console.log("Internal db error");
         console.log(err);
