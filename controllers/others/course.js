@@ -69,7 +69,7 @@ exports.getStudentList = function(req,res,next){
     }
     var result = [];
     for(var i=0; i<docs.length; i++){
-      result[i]._id = docs[i].studentID;
+      result.push({_id: docs[i].studentID}); 
     }
     User.find({_id: {$in: [result]}}, {_id: 1, name: 1, surname: 1, universityID: 1}, function (err, result) {
       if(err){
