@@ -3,26 +3,29 @@
 const User = require('./../../models/User');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
+const request = require('superagent');
 
 
 exports.uploadFile = function(req,res){
 
   console.log("Upload request recieved.");
-  console.log(req.file.filename);
+  console.log(req.body);
   /*if(!req.user._id){
     console.log("success: false, details: Autherization failed.");
     return res.status(401).send({"success":false, "detail": "Autherization failed!"});
   }*/
   var operation = req.body.operation;
 
+
+
   if(!operation){
     console.log("success: false, details: operation was not set!");
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation != 1 || operation != 2 ){
-    console.log("success: false, details: operation was not set!");
-    return res.status(200).send({"success":false, "detail": "operation was not set!"});
+  if(operation != 1 && operation != 2 ){
+    console.log("success: false, details: operation was wrong! "+operation);
+    return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
 
   switch(operation) {
