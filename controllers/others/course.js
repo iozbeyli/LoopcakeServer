@@ -72,7 +72,7 @@ exports.getStudentList = function(req,res,next){
       toComp.push(docs[i].studentID);
     }
     console.log(toComp[0]);
-    User.find({_id: {$in: toComp}}, {_id: 1, name: 1, surname: 1}, function (err, result) {
+    User.find({_id: {$in: [toComp]}}, {_id: 1, name: 1, surname: 1}, function (err, result) {
       if(err){
         console.log("Internal db error");
         console.log(err);
@@ -80,7 +80,7 @@ exports.getStudentList = function(req,res,next){
       }
 
       console.log("success: true, details: Students are listed.");
-      return res.status(200).send({"success":true, "details":+result});
+      return res.status(200).send({"success":true, "details": result});
     });
 
   });
