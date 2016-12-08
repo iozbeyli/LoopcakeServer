@@ -87,7 +87,7 @@ exports.getAnnouncement = function(req,res,next){
         for(var i=0; i<docs.length; i++){
           toComp.push(docs[i].courseID);
         }
-        Announcement.find({course: {$in: [toComp]}}, {author: 0}, {
+        Announcement.find({course: {$in: toComp}}, {author: 0}, {
           skip:0, // Starting Row
           limit:10, // Ending Row
           sort:{
