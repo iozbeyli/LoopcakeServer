@@ -1,5 +1,6 @@
 const Announcement = require('./../../models/Announcement');
 const Course = require('./../../models/Course');
+const CourseStudent = require('./../../models/CourseStudent');
 
 exports.announce = function(req,res,next){
   console.log("Announce Request Received");
@@ -36,7 +37,7 @@ exports.getAnnouncement = function(req,res,next){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation != 1){
+  if(operation != 1 && operation != 2){
     console.log("success: false, details: operation was wrong!");
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
@@ -71,6 +72,43 @@ exports.getAnnouncement = function(req,res,next){
       });
       break;
 
+    case '2':
+      var query = {};
+      query.studentID = req.user._id;
+
+      console.log(query);
+      CourseStudent.find(query, {courseID: 1}, function (err, docs) {
+        if(err){
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+        }
+        var toComp = [];
+        for(var i=0; i<docs.length; i++){
+          toComp.push(docs[i].courseID);
+        }
+        Announcement.find({course: {$in: [toComp]}}, {author: 0}, {
+          skip:0, // Starting Row
+          limit:10, // Ending Row
+          sort:{
+            date: -1 //Sort by Date Added DESC
+          }}, function (err, result) {
+          if(err){
+            console.log("Internal db error");
+            console.log(err);
+            return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+          }
+
+          if(!result.length){
+            console.log("success: false, details: Announcement do not exists");
+            return res.status(200).send({"success":false, "details": "Announcement do not exists"});
+          }else{
+            console.log("success: true, details: Student Announcements!");
+            return res.status(200).send({"success":true, "details": result});
+          }
+        });
+      });
+      break;
     default:
       console.log("success: false, details: Unknown Operation!");
       return res.status(200).send({"success":false, "details": "Unknown Operation!"});

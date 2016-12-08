@@ -10,5 +10,6 @@ const AnnouncementSchema = new Schema({
   date: { type: Date, default: Date.now },
   course: {type:mongoose.SchemaTypes.ObjectId, ref:'Course'}
 });
+AnnouncementSchema.index({date: 1});
 
 module.exports = mongoose.model('Announcement', AnnouncementSchema);
