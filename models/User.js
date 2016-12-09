@@ -9,14 +9,14 @@ const mongoose = require('mongoose'),
 
 const RepoSchema = new Schema({
   id: {type:mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
-  name: String
+  name: {type: String}
 })
 
 const UserSchema = new Schema({
         name: {type: String, required: true},
         surname: {type: String, required: false},
         email: {type: String, required:false, unique: true},
-        universityID: {type: mongoose.SchemaTypes.ObjectId, ref:'University', required:false},
+        universityID: {type: mongoose.SchemaTypes.ObjectId, ref:'University', required:false, unique: true},
         type: {type: String, required:false},
         photo: {type: mongoose.SchemaTypes.ObjectId},
         threads: [{type:mongoose.SchemaTypes.ObjectId, ref: 'Thread'}],

@@ -15,8 +15,6 @@ const CourseSchema = new mongoose.Schema({
   tags: [{type: String}],
   year: {type: Number},
   term: {type: String},
-  announcements: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Announcement'}],
-  projects: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Project'}],
   details: {type: String},
   syllabus: {type: mongoose.SchemaTypes.ObjectId}
 });
