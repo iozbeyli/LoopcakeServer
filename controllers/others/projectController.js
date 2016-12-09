@@ -3,7 +3,6 @@ const User = require('./../../models/User');
 const CourseStudent = require('./../../models/CourseStudent');
 const Group = require('./../../models/Group');
 const Project = require('./../../models/Project');
-const difference = require('array-difference');
 
 
 exports.create = function(req,res,next){
