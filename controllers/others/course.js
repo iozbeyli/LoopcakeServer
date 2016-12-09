@@ -88,6 +88,54 @@ exports.getStudentList = function(req,res,next){
 
 };
 
+exports.editCourse = function(req,res,next){
+  console.log("Get-Student-List Request Received");
+  console.log(req.body);
+  var query = {};
+  var upt = {};
+  if(req.body.courseid)
+    query._id = req.body.courseid;
+
+  if(req.body.department)
+    upt.department = req.body.department;
+
+  if(req.body.code)
+    upt.code = req.body.code;
+
+  if(req.body.name)
+    upt.name = req.body.name;
+
+  if(req.body.relatedCourses)
+    upt.relatedCourses = req.body.relatedCourses;
+
+  if(req.body.programmingLanguage)
+    upt.programmingLanguage = req.body.programmingLanguage;
+
+  if(req.body.tags)
+    upt.tags = req.body.tags;
+
+  if(req.body.year)
+    upt.year = req.body.year;
+
+  if(req.body.term)
+    upt.term = req.body.term;
+
+  if(req.body.details)
+    upt.details = req.body.details;
+
+
+  Course.findOneAndUpdate(query, upt, {new: true}, function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    console.log("success: true, details: Course is updated.");
+    return res.status(200).send({"success":true, "details": docs});
+  });
+
+
+};
 
 exports.getCourse = function(req,res,next){
   console.log("Get-Course request recieved. Operation:  "+ req.body.operation);

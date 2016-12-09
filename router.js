@@ -36,6 +36,7 @@ module.exports = function(app) {
   apiRoutes.get('/download', fileController.getFile);
   apiRoutes.post('/addCourse', course.addCourse);
   apiRoutes.post('/course', authController.auth, course.getCourse);
+  apiRoutes.post('/editCourse', course.editCourse);
   apiRoutes.post('/announce', authController.auth, announcement.announce);
   apiRoutes.post('/addStudents', authController.auth, course.addStudents);
   apiRoutes.post('/getStudents', authController.auth, course.getStudentList);
