@@ -127,54 +127,112 @@ exports.getAvailableStudents = function(req,res,next){
 
 };
 
-exports.addAttachment = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
-
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
-
-
-};
-
-exports.deleteAttachment = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
-
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
-
-
-};
-
 exports.editProject = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
+  console.log("Edit Project Request Received");
+  console.log(req.body);
+  var query = {};
+  var upt = {};
+  if(req.body.projectid)
+    query._id = req.body.projectid;
 
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
+  if(req.body.maxGroupSize)
+    upt.maxGroupSize = req.body.maxGroupSize;
+
+  if(req.body.deadline)
+    upt.deadline = req.body.deadline;
+
+  if(req.body.name)
+    upt.name = req.body.name;
+
+  if(req.body.tags)
+    upt.tags = req.body.tags;
+
+  if(req.body.details)
+    upt.details = req.body.details;
 
 
-};
-exports.deleteProject = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
-
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
+  Project.findOneAndUpdate(query, upt, {new: true}, function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    console.log("success: true, details: Project is updated.");
+    return res.status(200).send({"success":true, "details": docs});
+  });
 
 
 };
 
 exports.editGroup = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
+  console.log("Edit Group Request Received");
+  console.log(req.body);
+  var query = {};
+  var upt = {};
+  if(req.body.groupid)
+    query._id = req.body.groupid;
 
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
+  if(req.body.name)
+    upt.name = req.body.name;
+
+  if(req.body.students && req.body.students.length <= req.body.students.maxGroupSize){
+    upt.students = req.body.students;
+  }else{
+    console.log("success: false, details: Number of students requested to form group is too many.");
+    return res.status(200).send({"success":false, "details": "Number of students requested to form group is too many."});
+  }
+
+  if(req.body.tags)
+    upt.tags = req.body.tags;
+
+  if(req.body.details)
+    upt.details = req.body.details;
+
+
+  Group.findOneAndUpdate(query, upt, {new: true}, function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    console.log("success: true, details: Group is updated.");
+    return res.status(200).send({"success":true, "details": docs});
+  });
+
+
 };
 
-exports.deleteGroup = function(req,res,next){
-  console.log("Add Attacment to Project Request Received");
-    console.log("success: false, details: Under Construction");
-    return res.status(200).send({"success":false, "details": "Under Construction"});
+exports.updaGroup = function(req,res,next){
+  console.log("Edit Group Request Received");
+  console.log(req.body);
+  var query = {};
+  var upt = {};
+  if(req.body.groupid)
+    query._id = req.body.groupid;
+
+  if(req.body.name)
+    upt.name = req.body.name;
+
+  if(req.body.tags)
+    upt.tags = req.body.tags;
+
+  if(req.body.details)
+    upt.details = req.body.details;
+
+
+  Group.findOneAndUpdate(query, upt, {new: true}, function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    console.log("success: true, details: Group is updated.");
+    return res.status(200).send({"success":true, "details": docs});
+  });
+
 
 };
+
 
 
 exports.getProject = function(req,res,next){

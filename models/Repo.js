@@ -12,7 +12,8 @@ const RepoSchema = new mongoose.Schema({
   collaborators: [{type:mongoose.SchemaTypes.ObjectId, ref: 'User'}],
   branchPointers: [{type: mongoose.SchemaTypes.ObjectId, ref: 'BranchPointer'}],
   submission: {type: mongoose.SchemaTypes.ObjectId, ref: 'Submission'},
-  repoComment: {type: mongoose.SchemaTypes.ObjectId, ref: 'RepoComment'}
+  repoComment: {type: mongoose.SchemaTypes.ObjectId, ref: 'RepoComment'},
+  tags: [{type: String}]
 });
 
 module.exports = mongoose.model('Repo', RepoSchema);

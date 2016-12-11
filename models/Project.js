@@ -9,7 +9,8 @@ const ProjectSchema = new mongoose.Schema({
   courseID: {type: mongoose.SchemaTypes.ObjectId, ref: 'Course'},
   attachment: [{type: mongoose.SchemaTypes.ObjectId}],
   maxGroupSize: {type: Number},
-  deadline: {type: Date}
+  deadline: {type: Date},
+  tags: [{type: String}]
 });
 
 module.exports = mongoose.model('Project', ProjectSchema);

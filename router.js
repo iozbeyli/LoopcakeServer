@@ -40,9 +40,11 @@ module.exports = function(app) {
   //Repo Operations
   apiRoutes.post('/addRepo',      authController.auth, repo.add);
   apiRoutes.post('/getRepo',      authController.auth, repo.get);
+  apiRoutes.post('/editRepo',     authController.auth, repo.edit);
 
   //File Operations
   apiRoutes.post('/upload',       upload.single("file"), fileController.uploadFile); //auth
+  apiRoutes.post('/remove',       fileController.removeFile); //auth
   apiRoutes.get('/download',      fileController.getFile);
 
   //Course Operations
@@ -59,8 +61,10 @@ module.exports = function(app) {
   //Project&Group Operations
   apiRoutes.post('/addProject',   authController.auth, projectController.create);
   apiRoutes.post('/getProject',   authController.auth, projectController.getProject);
+  apiRoutes.post('/editProject',  authController.auth, projectController.editProject);
   apiRoutes.post('/addGroup',     authController.auth, projectController.addGroup);
   apiRoutes.post('/getGroup',     authController.auth, projectController.getGroup);
+  apiRoutes.post('/editGroup',    authController.auth, projectController.editGroup);
   apiRoutes.post('/getNonGroup',  authController.auth, projectController.getAvailableStudents);
 
 

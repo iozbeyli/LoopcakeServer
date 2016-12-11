@@ -89,7 +89,7 @@ exports.getStudentList = function(req,res,next){
 };
 
 exports.editCourse = function(req,res,next){
-  console.log("Get-Student-List Request Received");
+  console.log("Edit Course Request Received");
   console.log(req.body);
   var query = {};
   var upt = {};

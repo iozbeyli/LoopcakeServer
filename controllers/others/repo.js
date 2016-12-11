@@ -108,3 +108,37 @@ exports.get = function(req,res,next){
   }
 
 }
+
+exports.edit = function(req,res,next){
+  console.log("Edit Repo Request Received");
+  console.log(req.body);
+  var query = {};
+  var upt = {};
+  if(req.body.repoid)
+    query._id = req.body.repoid;
+
+  if(req.body.name)
+    upt.name = req.body.name;
+
+  if(req.body.members)
+    upt.members = req.body.members;
+
+  if(req.body.details)
+    upt.details = req.body.details;
+
+  if(req.body.tags)
+    upt.tags = req.body.tags;
+
+
+  Repo.findOneAndUpdate(query, upt, {new: true}, function (err, docs) {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+    console.log("success: true, details: Repo is updated.");
+    return res.status(200).send({"success":true, "details": docs});
+  });
+
+
+};

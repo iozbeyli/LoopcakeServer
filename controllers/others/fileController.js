@@ -2,11 +2,14 @@
 //const Index = require('./../../index');
 const User = require('./../../models/User');
 const Course = require('./../../models/Course');
+const Project = require('./../../models/Project');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
 const request = require('superagent');
 
-
+//Operation 1: Profile photo
+//Operation 2: Course syllabus
+//Operation 3: Project attachment
 exports.uploadFile = function(req,res){
 
   console.log("Upload request recieved.");
@@ -147,14 +150,88 @@ exports.uploadFile = function(req,res){
 
       });
       break;
+    case '3':
+        var filename = req.file.filename;
+        var path = req.file.path;
+        var type = req.file.mimetype;
+        var projectID = req.body.projectid;
+
+        console.log("operation 3 started");
+        console.log(req.body);
+
+        var read_stream =  fs.createReadStream(path);
+        var writeStream = gfs.createWriteStream({
+          filename: filename,
+          projectID: projectID
+        });
+
+        read_stream.pipe(writeStream);
+
+        writeStream.on('close', function(file) {
+          attachmentid = file._id;
+          console.log("attachmentid: "+ attachmentid);
+          writeStream.end();
+          console.log("projectID: "+projectID);
+          Project.findByIdAndUpdate(
+            projectID,
+            {$push: {"attachment": attachmentid}},
+            {safe: true, upsert: true, new : true},
+            function(err, model) {
+                if(err) return console.log(err);
+                fs.unlink(path);
+                return res.status(200).send({"success":true, "detail": model});
+          });
+      });
+      break;
     default:
       console.log("success: false, details: Unknown Operation!");
       return res.status(200).send({"success":false, "detail": "Unknown Operation!"});
       break;
   }
 
+};
 
+//Operation 1: Remove attachment from project
+exports.deleteFile = function(req,res){
 
+  console.log("Remove file request recieved.");
+  console.log(req.body);
+  var operation = req.body.operation;
+  if(!operation){
+    console.log("success: false, details: operation was not set!");
+    return res.status(200).send({"success":false, "detail": "operation was not set!"});
+  }
+
+  if(operation != 1 ){
+    console.log("success: false, details: operation was wrong! "+operation);
+    return res.status(200).send({"success":false, "detail": "operation was wrong!"});
+  }
+
+  switch(operation) {
+    case '1':
+      var attachmentid = req.body.attachmentid;
+      var projectID = req.body.projectid;
+
+      console.log("operation 1 started");
+
+      gfs.remove({_id: attachmentid}, function(err){
+        if(err) return console.log(err)
+        Project.findByIdAndUpdate(
+          projectID,
+          {$pull: {"attachment": attachmentid}},
+          {safe: true, new : true},
+          function(err, model) {
+              if(err) return console.log(err);
+              return res.status(200).send({"success":true, "detail": model});
+        });
+      });
+
+      break;
+    default:
+      console.log("success: false, details: Unknown Operation!");
+      return res.status(200).send({"success":false, "detail": "Unknown Operation!"});
+      break;
+  }
 
 };
 
