@@ -192,7 +192,7 @@ exports.uploadFile = function(req,res){
 };
 
 //Operation 1: Remove attachment from project
-exports.deleteFile = function(req,res){
+exports.removeFile = function(req,res){
 
   console.log("Remove file request recieved.");
   console.log(req.body);
