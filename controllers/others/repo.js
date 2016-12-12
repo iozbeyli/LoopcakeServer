@@ -136,8 +136,18 @@ exports.edit = function(req,res,next){
       console.log(err);
       return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
     }
-    console.log("success: true, details: Repo is updated.");
-    return res.status(200).send({"success":true, "details": docs});
+    console.log("newname"+upt.name);
+    console.log("repoid"+query._id);
+    console.log("members"+upt.members.join());
+    if(upt.name){
+      User.update({_id: {$in: upt.members}, "repos.id": query._id}, {'$set': {"repos.$.name": upt.name}} ,{multi: true}, function (err, docs) {
+        console.log("success: true, details: Repo is updated.");
+        return res.status(200).send({"success":true, "details": docs});
+      })
+    }else{
+      console.log("success: true, details: Repo is updated.");
+      return res.status(200).send({"success":true, "details": docs});
+    }
   });
 
 
