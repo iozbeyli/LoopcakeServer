@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
       Group = require('./Group'),
+      Schema = mongoose.Schema,
       Course = require('./Course');
 
 const attachmentSchema = new Schema({

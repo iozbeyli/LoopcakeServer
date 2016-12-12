@@ -218,7 +218,7 @@ exports.removeFile = function(req,res){
         if(err) return console.log(err)
         Project.findByIdAndUpdate(
           projectID,
-          {$pull: {"attachment": {"attachmentid": attachmentid]}},
+          {$pull: {"attachment": {"attachmentid": attachmentid}}},
           {safe: true, new : true},
           function(err, model) {
               if(err) return console.log(err);
