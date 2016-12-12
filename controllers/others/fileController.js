@@ -174,7 +174,7 @@ exports.uploadFile = function(req,res){
           console.log("projectID: "+projectID);
           Project.findByIdAndUpdate(
             projectID,
-            {$push: {"attachment": attachmentid}},
+            {$push: {"attachment": {"attachmentid": attachmentid, "filename": filename}}},
             {safe: true, upsert: true, new : true},
             function(err, model) {
                 if(err) return console.log(err);
@@ -218,7 +218,7 @@ exports.removeFile = function(req,res){
         if(err) return console.log(err)
         Project.findByIdAndUpdate(
           projectID,
-          {$pull: {"attachment": attachmentid}},
+          {$pull: {"attachment": {"attachmentid": attachmentid]}},
           {safe: true, new : true},
           function(err, model) {
               if(err) return console.log(err);
