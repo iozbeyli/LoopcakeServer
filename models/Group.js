@@ -14,7 +14,8 @@ const GroupSchema = new mongoose.Schema({
     repo: {type: mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
     clLabels: [{type: String}],
     clStatus: [{type: Boolean}],
-    clPoints: [{type: Number}]
+    clPoints: [{type: Number}],
+    report: {type: mongoose.SchemaTypes.ObjectId}
   });
 
 module.exports = mongoose.model('Group', GroupSchema);

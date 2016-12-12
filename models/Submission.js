@@ -3,8 +3,9 @@ const mongoose = require('mongoose'),
       Feedback = require('./Feedback');
 
 const SubmissionSchema = new mongoose.Schema({
-  branchPointer: {type:mongoose.SchemaTypes.ObjectId, ref: 'BranchPointer'},
-  feedback: {type: mongoose.SchemaTypes.ObjectId, ref: 'Feedback'}
+  file: {type:mongoose.SchemaTypes.ObjectId},
+  groupID: {type: mongoose.SchemaTypes.ObjectId},
+  groupID: {type: mongoose.SchemaTypes.ObjectId}
 });
 
 module.exports = mongoose.model('Submission', SubmissionSchema);

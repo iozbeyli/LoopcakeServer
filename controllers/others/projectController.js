@@ -379,7 +379,7 @@ exports.getGroup = function(req,res,next){
 
         if(!docs.length){
           console.log("success: false, details: User is not a member of a group.");
-          return res.status(200).send({"success":true, "details": false});
+          return res.status(200).send({"success":true, "details": [false]});
         }else{
           console.log("success:true, details: Groups Found");
           return res.status(200).send({"success":true, "details": docs});

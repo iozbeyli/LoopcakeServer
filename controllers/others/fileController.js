@@ -2,6 +2,7 @@
 //const Index = require('./../../index');
 const User = require('./../../models/User');
 const Course = require('./../../models/Course');
+const Group = require('./../../models/Group');
 const Project = require('./../../models/Project');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
@@ -27,7 +28,7 @@ exports.uploadFile = function(req,res){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation != 1 && operation != 2 ){
+  if(operation < 1 || operation > 4){
     console.log("success: false, details: operation was wrong! "+operation);
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
@@ -181,6 +182,74 @@ exports.uploadFile = function(req,res){
                 fs.unlink(path);
                 return res.status(200).send({"success":true, "detail": model});
           });
+      });
+      break;
+
+    case '4':
+      var filename = req.file.filename;
+      var path = req.file.path;
+      var type = req.file.mimetype;
+      var groupID = req.body.groupid;
+
+      var oldReport;
+      console.log("operation 4 started");
+      console.log(req.body);
+      console.log("GroupID"+groupID);
+
+      Group.findOne({"_id": groupID}, {report: 1}, function (err, docs) {
+        if(err){
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
+        }
+        console.log("docs: "+docs);
+        oldReport = docs.report;
+        console.log("oldReport id: "+ oldReport);
+
+        var read_stream =  fs.createReadStream(path);
+        var writeStream = gfs.createWriteStream({
+          filename: filename,
+          groupID: groupID
+        });
+
+        read_stream.pipe(writeStream);
+
+        writeStream.on('close', function(file) {
+          newReport = file._id;
+          console.log("newReport id: "+ newReport);
+          writeStream.end();
+
+          if(oldReport){
+            console.log("triying to remove "+oldReport);
+            gfs.remove({_id: oldReport}, function(err){
+              if(err) return console.log(err);
+
+              Group.findByIdAndUpdate(
+                groupID,
+                {report: newReport},
+                {upsert: true, new : true},
+                function(err, model) {
+                    if(err) return console.log(err);
+                    fs.unlink(path);
+                    return res.status(200).send({"success":true, "detail": model});
+              });
+            });
+          }else{
+          Group.findByIdAndUpdate(
+            groupID,
+            {report: newReport},
+            {upsert: true, new : true},
+            function(err, model) {
+                if(err) return console.log(err);
+                fs.unlink(path);
+                return res.status(200).send({"success":true, "detail": model});
+          });
+
+        }
+
+        });
+
+
       });
       break;
     default:
