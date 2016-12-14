@@ -7,6 +7,8 @@ const userController = require('./controllers/others/userController');
 const course = require('./controllers/others/course');
 const repo = require('./controllers/others/repo');
 const projectController = require('./controllers/others/projectController');
+const groupController = require('./controllers/others/groupController');
+const submissionController = require('./controllers/others/submissionController');
 const announcement = require('./controllers/others/announcementController');
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -58,15 +60,22 @@ module.exports = function(app) {
   apiRoutes.post('/announce',     authController.auth, announcement.announce);
   apiRoutes.post('/getAnnounce',  authController.auth, announcement.getAnnouncement);
 
-  //Project&Group Operations
-  apiRoutes.post('/addProject',   authController.auth, projectController.create);
-  apiRoutes.post('/getProject',   authController.auth, projectController.getProject);
-  apiRoutes.post('/editProject',  authController.auth, projectController.editProject);
-  apiRoutes.post('/addGroup',     authController.auth, projectController.addGroup);
-  apiRoutes.post('/getGroup',     authController.auth, projectController.getGroup);
-  apiRoutes.post('/editGroup',    authController.auth, projectController.editGroup);
-  apiRoutes.post('/getNonGroup',  authController.auth, projectController.getAvailableStudents);
+  //Project Operations
+  apiRoutes.post('/addProject',       authController.auth, projectController.create);
+  apiRoutes.post('/getProject',       authController.auth, projectController.getProject);
+  apiRoutes.post('/editProject',      authController.auth, projectController.editProject);
+  apiRoutes.post('/updateChecklist',  authController.auth, projectController.updateChecklist);
 
+  //Group Operations
+  apiRoutes.post('/addGroup',     authController.auth, groupController.create);
+  apiRoutes.post('/getGroup',     authController.auth, groupController.getGroup);
+  apiRoutes.post('/editGroup',    authController.auth, groupController.editGroup);
+  apiRoutes.post('/getNonGroup',  authController.auth, groupController.getAvailableStudents);
+
+  //Submission operation
+  apiRoutes.post('/editSubmission',  authController.auth, submissionController.editSubmission);
+  apiRoutes.post('/getSubmission',   authController.auth, submissionController.getSubmission);
+  apiRoutes.get('/getAllSubmissions', submissionController.getAllSubmissions);
 
   app.use('/api', apiRoutes);
 }

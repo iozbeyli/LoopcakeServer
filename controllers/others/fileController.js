@@ -4,6 +4,7 @@ const User = require('./../../models/User');
 const Course = require('./../../models/Course');
 const Group = require('./../../models/Group');
 const Project = require('./../../models/Project');
+const Submission = require('./../../models/Submission');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
 const request = require('superagent');
@@ -11,24 +12,20 @@ const request = require('superagent');
 //Operation 1: Profile photo
 //Operation 2: Course syllabus
 //Operation 3: Project attachment
+//Operation 4: Submission report attachment
+//Operation 5: Submission other attachment
 exports.uploadFile = function(req,res){
-
   console.log("Upload request recieved.");
   console.log(req.body);
-  /*if(!req.user._id){
-    console.log("success: false, details: Autherization failed.");
-    return res.status(401).send({"success":false, "detail": "Autherization failed!"});
-  }*/
+
   var operation = req.body.operation;
-
-
 
   if(!operation){
     console.log("success: false, details: operation was not set!");
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation < 1 || operation > 4){
+  if(operation < 1 || operation > 5){
     console.log("success: false, details: operation was wrong! "+operation);
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
@@ -94,6 +91,7 @@ exports.uploadFile = function(req,res){
 
 
       break;
+
     case '2':
       var filename = req.file.filename;
       var path = req.file.path;
@@ -151,6 +149,7 @@ exports.uploadFile = function(req,res){
 
       });
       break;
+
     case '3':
         var filename = req.file.filename;
         var path = req.file.path;
@@ -189,19 +188,30 @@ exports.uploadFile = function(req,res){
       var filename = req.file.filename;
       var path = req.file.path;
       var type = req.file.mimetype;
-      var groupID = req.body.groupid;
+      var submissionID = req.body.submissionid;
+
+      var deadline = new Date(req.body.deadline);
+      var now = new Date();
+      console.log("now");
+      console.log(now);
+      var comp = deadline - now;
+      if(comp < 0){
+        console.log("success: false, details: Deadline is missed.");
+        return res.status(200).send({"success":false, "details": [false]});
+      }
 
       var oldReport;
       console.log("operation 4 started");
       console.log(req.body);
-      console.log("GroupID"+groupID);
+      console.log("submissionID"+submissionID);
 
-      Group.findOne({"_id": groupID}, {report: 1}, function (err, docs) {
+      Submission.findOne({"_id": submissionID}, {report: 1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
         }
+
         console.log("docs: "+docs);
         oldReport = docs.report;
         console.log("oldReport id: "+ oldReport);
@@ -209,9 +219,8 @@ exports.uploadFile = function(req,res){
         var read_stream =  fs.createReadStream(path);
         var writeStream = gfs.createWriteStream({
           filename: filename,
-          groupID: groupID
+          submissionID: submissionID
         });
-
         read_stream.pipe(writeStream);
 
         writeStream.on('close', function(file) {
@@ -219,39 +228,72 @@ exports.uploadFile = function(req,res){
           console.log("newReport id: "+ newReport);
           writeStream.end();
 
-          if(oldReport){
-            console.log("triying to remove "+oldReport);
-            gfs.remove({_id: oldReport}, function(err){
-              if(err) return console.log(err);
-
-              Group.findByIdAndUpdate(
-                groupID,
-                {report: newReport},
-                {upsert: true, new : true},
-                function(err, model) {
-                    if(err) return console.log(err);
-                    fs.unlink(path);
-                    return res.status(200).send({"success":true, "detail": model});
-              });
-            });
-          }else{
-          Group.findByIdAndUpdate(
-            groupID,
-            {report: newReport},
+          Submission.findByIdAndUpdate(
+            submissionID,
+            {report: newReport, "date": now},
             {upsert: true, new : true},
             function(err, model) {
                 if(err) return console.log(err);
                 fs.unlink(path);
-                return res.status(200).send({"success":true, "detail": model});
+                if(oldReport){
+                  console.log("triying to remove "+oldReport);
+                  gfs.remove({_id: oldReport}, function(err){
+                    if(err) return console.log(err);
+
+                    return res.status(200).send({"success":true, "details": model});
+                  });
+                }else{
+                  console.log("success:true, details: replaced");
+                  return res.status(200).send({"success":true, "details": model});
+                }
           });
-
-        }
-
         });
-
-
       });
       break;
+
+    case "5":
+      var filename = req.file.filename;
+      var path = req.file.path;
+      var type = req.file.mimetype;
+      var submissionID = req.body.submissionid;
+
+      var deadline = new Date(req.body.deadline);
+      var now = new Date();
+      var comp = deadline - now;
+      console.log("now");
+      console.log(now);
+      if(comp < 0){
+        console.log("success: false, details: Deadline is missed.");
+        return res.status(200).send({"success":false, "details": [false]});
+      }
+      console.log("operation 5 started");
+      console.log(req.body);
+
+      var read_stream =  fs.createReadStream(path);
+      var writeStream = gfs.createWriteStream({
+        filename: filename,
+        submissionID: submissionID
+      });
+
+      read_stream.pipe(writeStream);
+
+      writeStream.on('close', function(file) {
+        attachmentid = file._id;
+        console.log("attachmentid: "+ attachmentid);
+        writeStream.end();
+        console.log("submissionID: "+submissionID);
+        Submission.findByIdAndUpdate(
+          submissionID,
+          {$push: {"attachment": {"attachmentid": attachmentid, "filename": filename}}, "date": now},
+          {safe: true, upsert: true, new : true},
+          function(err, model) {
+              if(err) return console.log(err);
+              fs.unlink(path);
+              return res.status(200).send({"success":true, "detail": model});
+        });
+      });
+      break;
+
     default:
       console.log("success: false, details: Unknown Operation!");
       return res.status(200).send({"success":false, "detail": "Unknown Operation!"});
@@ -261,6 +303,7 @@ exports.uploadFile = function(req,res){
 };
 
 //Operation 1: Remove attachment from project
+//Operation 1: Remove attachment from submission
 exports.removeFile = function(req,res){
 
   console.log("Remove file request recieved.");
@@ -271,7 +314,7 @@ exports.removeFile = function(req,res){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation != 1 ){
+  if(operation != 1 && operation != 2){
     console.log("success: false, details: operation was wrong! "+operation);
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
@@ -293,6 +336,34 @@ exports.removeFile = function(req,res){
               if(err) return console.log(err);
               return res.status(200).send({"success":true, "detail": model});
         });
+      });
+
+      break;
+    case "2":
+    var attachmentid = req.body.attachmentid;
+    var submissionID = req.body.submissionid;
+    var deadline = new Date(req.body.deadline);
+    var now = new Date();
+    var comp = deadline - now;
+    if(comp < 0){
+      console.log("success: false, details: Deadline is missed.");
+      return res.status(200).send({"success":false, "details": [false]});
+    }
+    console.log("operation 2 started");
+
+      gfs.remove({_id: attachmentid}, function(err){
+        if(err) return console.log(err)
+        Submission.findByIdAndUpdate(
+          submissionID,
+          {
+            $pull: {"attachment": {"attachmentid": attachmentid}},
+            "date": now
+          },
+          {safe: true, new : true},
+          function(err, model) {
+              if(err) return console.log(err);
+              return res.status(200).send({"success":true, "detail": model});
+          });
       });
 
       break;
