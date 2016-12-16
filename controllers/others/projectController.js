@@ -112,18 +112,17 @@ exports.updateChecklist = function(req,res,next){
       var cpid = req.body.cpid;
       var projectID = req.body.projectid;
       console.log("Removing checkpoint "+cpid);
+      console.log("Removing checkpoint "+projectID);
       Project.findByIdAndUpdate(
         projectID,
-        {pull: {"checklist": {"_id": cpid}}},
+        {$pull: {"checklist": {"_id": cpid}}},
         {safe: true, new : true},
         function(err, model) {
             if(err) return console.log(err);
-            var length = model.checklist.length;
-            var cpid = model.checklist[length-1]._id;
             console.log("cpid "+cpid);
             Group.update(
               {"projectID": projectID},
-              {pull: {"checklist": {"cpid": cpid}}},
+              {$pull: {"checklist": {"cpid": cpid}}},
               {safe: true, new : true, multi:true},
               function(err, result) {
                   if(err) return console.log(err);

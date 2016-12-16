@@ -25,7 +25,7 @@ exports.uploadFile = function(req,res){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation < 1 || operation > 5){
+  if(operation < 1 || operation > 6){
     console.log("success: false, details: operation was wrong! "+operation);
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
