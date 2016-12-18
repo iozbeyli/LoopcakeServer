@@ -22,6 +22,7 @@
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.6.5",
     "multer": "^1.2.0",
-    "superagent": "^3.0.0"
+    "superagent": "^3.0.0",
+    "xlsx": "^0.8.0"
   }
 }

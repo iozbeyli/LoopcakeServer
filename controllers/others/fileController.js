@@ -8,12 +8,14 @@ const Submission = require('./../../models/Submission');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');
 const request = require('superagent');
+const xlsx = require('xlsx');
 
 //Operation 1: Profile photo
 //Operation 2: Course syllabus
 //Operation 3: Project attachment
 //Operation 4: Submission report attachment
 //Operation 5: Submission other attachment
+//Operation 6: XLSX_CSV operation
 exports.uploadFile = function(req,res){
   console.log("Upload request recieved.");
   console.log(req.body);
@@ -25,7 +27,7 @@ exports.uploadFile = function(req,res){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation < 1 || operation > 6){
+  if(operation < 1 || operation > 7){
     console.log("success: false, details: operation was wrong! "+operation);
     return res.status(200).send({"success":false, "detail": "operation was wrong!"});
   }
@@ -292,6 +294,21 @@ exports.uploadFile = function(req,res){
               return res.status(200).send({"success":true, "detail": model});
         });
       });
+      break;
+
+    case "6":
+      var filename = req.file.filename;
+      var path = req.file.path;
+      var type = req.file.mimetype;
+      console.log("operation 6 started");
+      var wb = xlsx.readFile(path);
+      var ws = wb.Sheets[wb.SheetNames[0]]
+      var users = xlsx.utils.sheet_to_json(ws);
+
+      console.log(users);
+
+      return res.status(200).send("ok");
+
       break;
 
     default:
