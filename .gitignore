@@ -1,3 +1,4 @@
 node_modules/
-semantic
 uploads
+temp
+.remote-sync.json

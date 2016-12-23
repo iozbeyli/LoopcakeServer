@@ -25,7 +25,7 @@ exports.add = function(req,res,next){
         } else {
           request
           .post("http://46.101.123.191:9560/api/create")
-          .send({"user": req.user._id , "repo": repo._id})
+          .send({"user": req.user._id , "repo": repo._id, "name": req.user.name, "surname": req.user.surname, "message": req.body.message, "email": req.user.email})
           .end(function(err,resp){
             if(err){
               console.log(err)

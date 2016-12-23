@@ -92,7 +92,7 @@ exports.getAnnouncement = function(req,res,next){
           limit:10, // Ending Row
           sort:{
             date: -1 //Sort by Date Added DESC
-          }}, function (err, result) {
+          }}).populate("course", "name").exec(function (err, result) {
           if(err){
             console.log("Internal db error");
             console.log(err);

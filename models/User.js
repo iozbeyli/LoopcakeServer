@@ -42,6 +42,8 @@ UserSchema.methods.generateJwt = function () {
   return jsonwebtoken.sign({
     _id: this._id,
     email: this.email,
+    name: this.name,
+    surname: this.surname,
     expire: parseInt(expiry.getTime() / 1000)
   }, process.env.MY_TOKEN || 'MY_TOKEN')
 };
