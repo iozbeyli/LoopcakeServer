@@ -16,7 +16,7 @@ const UserSchema = new Schema({
         name: {type: String, required: true},
         surname: {type: String, required: false},
         email: {type: String, required:false, unique: true},
-        universityID: {type: mongoose.SchemaTypes.ObjectId, ref:'University', required:false, unique: true},
+        universityID: {type: mongoose.SchemaTypes.ObjectId, ref:'University', required:false},
         type: {type: String, required:false},
         photo: {type: mongoose.SchemaTypes.ObjectId},
         threads: [{type:mongoose.SchemaTypes.ObjectId, ref: 'Thread'}],
