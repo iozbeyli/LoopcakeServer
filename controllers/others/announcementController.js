@@ -55,7 +55,7 @@ exports.getAnnouncement = function(req,res,next){
         query.course = req.body.course;
 
       console.log(query);
-      Announcement.find(query, function (err, docs) {
+      Announcement.find(query).populate("course", "name").exec( function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);

@@ -97,8 +97,8 @@ exports.updateChecklist = function(req,res,next){
               var cpid = model.checklist[length-1]._id;
               console.log("cpid "+cpid);
               Group.update(
-                {"projectID": projectID},
-                {$push: {"checklist": {"cpid": cpid, "status": false}}},
+                {"project": projectID},
+                {$push: {"checklist": {"cpid": cpid, "status": false, "point": point}}},
                 {safe: true, upsert: true, new : true, multi:true},
                 function(err, result) {
                     if(err) return console.log(err);
@@ -112,7 +112,6 @@ exports.updateChecklist = function(req,res,next){
       var cpid = req.body.cpid;
       var projectID = req.body.projectid;
       console.log("Removing checkpoint "+cpid);
-      console.log("Removing checkpoint "+projectID);
       Project.findByIdAndUpdate(
         projectID,
         {$pull: {"checklist": {"_id": cpid}}},
@@ -121,7 +120,7 @@ exports.updateChecklist = function(req,res,next){
             if(err) return console.log(err);
             console.log("cpid "+cpid);
             Group.update(
-              {"projectID": projectID},
+              {"project": projectID},
               {$pull: {"checklist": {"cpid": cpid}}},
               {safe: true, new : true, multi:true},
               function(err, result) {
@@ -233,6 +232,7 @@ exports.getProject = function(req,res,next){
         }
       });
       break;
+
     default:
       console.log("success: false, details: Unknown Operation!");
       return res.status(200).send({"success":false, "details": "Unknown Operation!"});

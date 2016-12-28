@@ -147,10 +147,6 @@ exports.getCourse = function(req,res,next){
     return res.status(200).send({"success":false, "detail": "operation was not set!"});
   }
 
-  if(operation != 1 && operation != 2){
-    console.log("success: false, details: operation was not set!");
-    return res.status(200).send({"success":false, "detail": "operation was not set!"});
-  }
 
   switch(operation) {
     case '1':
@@ -197,6 +193,38 @@ exports.getCourse = function(req,res,next){
           return res.status(200).send({"success":true, "details": docs});
         }
       });
+      break;
+    case "3":
+    var query = {};
+    query.studentID = req.user._id;
+
+    console.log(query);
+    CourseStudent.find(query, {courseID: 1}, function (err, docs) {
+      if(err){
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+      }
+      var toComp = [];
+      for(var i=0; i<docs.length; i++){
+        toComp.push(docs[i].courseID);
+      }
+      Course.find({_id: {$in: toComp}}, {_id: 1, name: 1, department: 1, code: 1, year: 1, term: 1},  function (err, docs) {
+        if(err){
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+        }
+
+        if(!docs.length){
+          console.log("success: false, details: Student does not take any courses.");
+          return res.status(200).send({"success":false, "details": "Student does not take any courses."});
+        }else{
+          console.log("success:true, details: Course Found");
+          return res.status(200).send({"success":true, "details": docs});
+        }
+      });
+    });
       break;
     default:
       console.log("success: false, details: Unknown Operation!");

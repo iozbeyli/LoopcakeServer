@@ -306,7 +306,7 @@ exports.uploadFile = function(req,res){
       var users = xlsx.utils.sheet_to_json(ws);
 
       console.log(users);
-
+      fs.unlink(path);
       return res.status(200).send("ok");
 
       break;

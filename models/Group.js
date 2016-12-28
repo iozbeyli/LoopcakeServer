@@ -7,7 +7,8 @@ const mongoose = require('mongoose'),
 
 const checkpoint = new Schema({
     cpid: {type: String},
-    status: {type: Boolean}
+    status: {type: Boolean},
+    point: {type: Number}
 })
 
 const GroupSchema = new mongoose.Schema({
@@ -15,7 +16,8 @@ const GroupSchema = new mongoose.Schema({
     name: {type: String},
     details: {type: String},
     tags: [{type: String}],
-    projectID: {type: mongoose.SchemaTypes.ObjectId, ref:'Project'},
+    project: {type: mongoose.SchemaTypes.ObjectId, ref:'Project'},
+    course: {type: mongoose.SchemaTypes.ObjectId, ref:'Course'},
     repo: {type: mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
     checklist: [checkpoint]
   });

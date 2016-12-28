@@ -1,12 +1,13 @@
 const Repo = require('./../../models/Repo');
 const User = require('./../../models/User');
+const Group = require('./../../models/Group');
 const request = require('superagent');
 
 exports.add = function(req,res,next){
   console.log("Add Repo Request Received!");
   console.log(req.body);
   if(req.body.isRepoPersonal){
-    req.body.members = req.user._id;
+    req.body.members = [req.user._id];
   }
   const repo = new Repo(req.body);
   console.log(req.user);
@@ -18,20 +19,32 @@ exports.add = function(req,res,next){
       console.log(err);
       return res.status(500).send({"success":false, "details": "Internal DB error!", "error": err});
     } else {
-      User.update({_id: req.user._id}, {$push: {repos: {id: repo._id, name:repo.name}}}, function(err){
+      User.update({_id: {$in: req.body.members}}, {$push: {repos: {id: repo._id, name:repo.name}}}, {multi: true},function(err){
         if(err) {
           console.log(err)
           return res.status(500).send({"success":false, "details": "Internal DB error!", "error": err});
         } else {
           request
           .post("http://46.101.123.191:9560/api/create")
-          .send({"user": req.user._id , "repo": repo._id, "name": req.user.name, "surname": req.user.surname, "message": req.body.message, "email": req.user.email})
+          .send({"user": req.user._id , "repo": repo._id, "name": req.user.name, "surname": req.user.surname, "message": req.body.message, "email": req.user.email, "members": req.body.members})
           .end(function(err,resp){
             if(err){
               console.log(err)
               return res.status(500).send({"success":false, "details": "Internal DB error!", "error": err});
             }else{
-              return res.status(200).send({"success":true, "detail": "Repo created"});
+              if(!req.body.isRepoPersonal){
+                  Group.findByIdAndUpdate(req.body.groupid, {"repo": repo._id}, {new: true}, function (err, docs) {
+                    if(err){
+                      console.log("Internal db error");
+                      console.log(err);
+                      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+                    }
+                    console.log("success: true, details: Group repo is created.");
+                    return res.status(200).send({"success":true, "details": docs});
+                  });
+              }else{
+                return res.status(200).send({"success":true, "detail": "Repo created"});
+              }
             }
           });
         }

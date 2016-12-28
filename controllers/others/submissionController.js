@@ -1,6 +1,7 @@
 const Submission = require('./../../models/Submission');
 var archiver = require('archiver');
 var fse = require("fs-extra");
+const http = require('http');
 
 exports.editSubmission = function(req,res,next){
   var deadline = new Date(req.body.deadline);
@@ -169,4 +170,57 @@ exports.getSubmission = function(req,res,next){
         return res.status(200).send({"success":false, "detail": "operation was wrong!"});
 
     }
+}
+
+exports.submitRepo = function(req,res,next){
+  var submissionID = req.body.submissionid;
+  var user = req.user._id;
+  var repo = req.body.repo;
+  var groupName = req.body.groupname;
+
+
+  var deadline = new Date(req.body.deadline);
+  var now = new Date();
+  var comp = deadline - now;
+  console.log("now");
+  console.log(now);
+  if(comp < 0){
+    console.log("success: false, details: Deadline is missed.");
+    return res.status(200).send({"success":false, "details": [false]});
+  }
+  console.log("Submit repo started");
+  console.log(req.body);
+
+  //send get request to git pull
+  var userID ="?user="+user;
+  var repoID ="&repo="+repo;
+  var repoName ="&repoName="+groupName;
+  var attributes = userID+repoID+repoName;
+  console.log("attributes");
+  console.log(attributes);
+
+  var request = http.get("http://46.101.123.191:9560/api/pull"+attributes, function(response) {
+    var writeStream = gfs.createWriteStream({
+      filename: groupName,
+      submissionID: submissionID
+    });
+
+    response.pipe(writeStream);
+
+    writeStream.on('close', function(file) {
+      attachmentid = file._id;
+      console.log("attachmentid: "+ attachmentid);
+      writeStream.end();
+      console.log("submissionID: "+submissionID);
+      Submission.findByIdAndUpdate(
+        submissionID,
+        {$push: {"attachment": {"attachmentid": attachmentid, "filename": groupName}}, "date": now},
+        {safe: true, upsert: true, new : true},
+        function(err, model) {
+            if(err) return console.log(err);
+            return res.status(200).send({"success":true, "detail": model});
+      });
+    });
+  });
+
 }

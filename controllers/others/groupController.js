@@ -21,9 +21,10 @@ exports.create = function(req,res,next){
   }
   var groupDetails= {};
   groupDetails.students = req.body.students;
-  groupDetails.projectID = req.body.projectid;
+  groupDetails.project = req.body.projectid;
+  groupDetails.course = req.body.courseid;
   groupDetails.name = req.body.name;
-  groupDetails.deatail = "Student Project Group";
+  groupDetails.detail = "Student Project Group";
   console.log(groupDetails);
   const group = new Group(groupDetails);
 
@@ -36,7 +37,7 @@ exports.create = function(req,res,next){
       var subDetails = {};
       subDetails.groupID = group._id;
       subDetails.groupName = group.name;
-      subDetails.projectID = group.projectID;
+      subDetails.project = group.project;
 
       const submission = new Submission(subDetails);
       submission.save(err => {
@@ -69,7 +70,7 @@ exports.getAvailableStudents = function(req,res,next){
   var query1 = {};
   var query2 = {};
   query1.courseID = req.body.courseid;
-  query2.projectID = req.body.projectid;
+  query2.project = req.body.projectid;
 
   CourseStudent.find(query1,{studentID: 1},  function (err, docs) {
     if(err){
@@ -178,7 +179,7 @@ exports.editGroup = function(req,res,next){
 };
 
 exports.getGroup = function(req,res,next){
-  console.log("Get-Group request recieved. Operation:  "+ req.body);
+  console.log("Get-Group request recieved. Operation:  "+ req.body.operation);
 
   var operation = req.body.operation;
 
@@ -188,15 +189,10 @@ exports.getGroup = function(req,res,next){
   }
 
   //1: Group list for projectid , 2: Group for groupid , 3: Group for user._id
-  if(operation != 1 && operation != 2 && operation != 3){
-    console.log("success: false, details: operation was wrong!");
-    return res.status(200).send({"success":false, "detail": "operation was wrong!"});
-  }
-
   switch(operation) {
     case '1':
       var query = {};
-      query.projectID = req.body.projectid;
+      query.project = req.body.projectid;
 
 
       console.log(query);
@@ -239,10 +235,11 @@ exports.getGroup = function(req,res,next){
         }
       });
       break;
+
     case '3':
       var query = {};
       query.students = req.user._id;
-      query.projectID = req.body.projectid;
+      query.project = req.body.projectid;
       console.log(query);
       Group.find(query, function (err, docs) {
         if(err){
@@ -259,6 +256,39 @@ exports.getGroup = function(req,res,next){
           return res.status(200).send({"success":true, "details": docs});
         }
       });
+      break;
+
+    case '4':
+    var query = {};
+    query.studentID = req.user._id;
+
+    console.log(query);
+    CourseStudent.find(query, {courseID: 1}, function (err, docs) {
+      if(err){
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+      }
+      var toComp = [];
+      for(var i=0; i<docs.length; i++){
+        toComp.push(docs[i].courseID);
+      }
+      Group.find({course: {$in: toComp}, students: req.user._id}).populate("course", "name").populate("project", "_id name deadline").exec(function (err, result) {
+        if(err){
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+        }
+
+        if(!result.length){
+          console.log("success: false, details: Student is not member of a group");
+          return res.status(200).send({"success":false, "details": "Student is not member of a group"});
+        }else{
+          console.log("success: true, details: Student\'s Group!");
+          return res.status(200).send({"success":true, "details": result});
+        }
+      });
+    });
       break;
     default:
       console.log("success: false, details: Unknown Operation!");
