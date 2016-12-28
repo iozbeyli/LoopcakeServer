@@ -33,7 +33,7 @@ module.exports = function(app) {
   apiRoutes.post('/otantik',      authController.auth, authController.isTokenValid);
 
   //University Operations
-  apiRoutes.post('/university',   universityController.addUniversity);
+  apiRoutes.post('/university',   universityController.addUniversity); //auth
 
   //User Operations
   apiRoutes.post('/user',         authController.auth, userController.getUser);
