@@ -1,7 +1,5 @@
 const mongoose = require('mongoose'),
-      Group = require('./Group'),
-      Schema = mongoose.Schema,
-      Course = require('./Course');
+      Schema = mongoose.Schema;
 
 const attachmentSchema = new Schema({
     attachmentid: {type:mongoose.SchemaTypes.ObjectId},

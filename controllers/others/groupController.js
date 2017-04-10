@@ -1,5 +1,5 @@
 
-const User = require('./../../models/User');
+const User = require('./../../models/Course');
 const CourseStudent = require('./../../models/CourseStudent');
 const Group = require('./../../models/Group');
 const Submission = require('./../../models/Submission');

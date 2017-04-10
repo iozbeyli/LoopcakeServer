@@ -1,6 +1,5 @@
 const mongoose = require('mongoose'),
-      Schema = mongoose.Schema,
-      Feedback = require('./Feedback');
+      Schema = mongoose.Schema;
 
 const sAttachmentSchema = new Schema({
     attachmentid: {type:mongoose.SchemaTypes.ObjectId},

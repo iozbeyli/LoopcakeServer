@@ -1,9 +1,4 @@
-const mongoose = require('mongoose'),
-      Department = require('./Department'),
-      User = require('./User'),
-      Course = require('./Course'),
-      Announcement = require('./Announcement'),
-      Project = require('./Project');
+const mongoose = require('mongoose');
 
 const CourseSchema = new mongoose.Schema({
   name: {type: String, required:true},

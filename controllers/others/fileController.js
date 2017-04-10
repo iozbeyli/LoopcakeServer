@@ -1,9 +1,8 @@
 
 //const Index = require('./../../index');
-const User = require('./../../models/User');
+const User = require('./../../models/Course');
 const Course = require('./../../models/Course');
 const Group = require('./../../models/Group');
-const Project = require('./../../models/Project');
 const Submission = require('./../../models/Submission');
 const busboyBodyParser = require('busboy-body-parser');
 const fs = require('fs');

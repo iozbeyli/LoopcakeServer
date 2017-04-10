@@ -1,0 +1,7 @@
+{
+  "db": "mongodb://mebegu:loop123456@ds157500.mlab.com:57500/loopcakedb",
+  "port": "5567",
+  "JWTSecret": "g.o.r.a'ya_yaklasan_cisim",
+  "JWTExpiration": "1d",
+  "saltRounds": "12"
+}

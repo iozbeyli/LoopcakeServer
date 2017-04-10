@@ -1,5 +1,5 @@
 const Course = require('./../../models/Course');
-const User = require('./../../models/User');
+const User = require('./../../models/Course');
 const CourseStudent = require('./../../models/CourseStudent');
 
 exports.addCourse = function(req,res,next){

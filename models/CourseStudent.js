@@ -1,6 +1,4 @@
-const mongoose = require('mongoose'),
-      User = require('./User'),
-      Course = require('./Course');
+const mongoose = require('mongoose');
 
 const CourseStudentSchema = new mongoose.Schema({
   courseID: {type:mongoose.SchemaTypes.ObjectId, ref: 'Course'},

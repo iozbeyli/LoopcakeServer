@@ -1,9 +1,5 @@
 const mongoose = require('mongoose'),
-      User = require('./User'),
-      Course = require('./Course'),
-      Project = require('./Project'),
-      Schema = mongoose.Schema,
-      Repo = require('./Repo');
+      Schema = mongoose.Schema;
 
 const checkpoint = new Schema({
     cpid: {type: String},
