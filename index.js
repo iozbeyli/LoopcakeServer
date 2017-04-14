@@ -1,15 +1,13 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
-const crypto = require('crypto');
-const jsonwebtoken = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const router = require('./router');
 const cors = require('cors');
 const Grid = require('gridfs-stream');
-const busboyBodyParser = require('busboy-body-parser');
-const config = require('./config.json');
+
+const router = require('./product/router');
+const config = require('./product/config.json');
 
 
 mongoose.Promise = global.Promise;
@@ -25,10 +23,7 @@ mongoose.connection.once('open', function () {
   // all set!
 })
 
-
-//app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-//app.use(busboyBodyParser());
 app.use(cookieParser());
 app.use(cors());
 router(app);
