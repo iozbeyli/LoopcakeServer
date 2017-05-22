@@ -13,7 +13,7 @@ const busboyBodyParser = require('busboy-body-parser');
 
 mongoose.Promise = global.Promise;
 //Grid.mongo = mongoose.mongo;
-const conn = mongoose.connect('mongodb://138.68.67.222:27017/loopcakeDB');
+const conn = mongoose.connect('mongodb://mebegu:loop123456@ds157500.mlab.com:57500/loopcakedb');
 global.db = mongoose.connection.db;
 var gfs;
 mongoose.connection.once('open', function () {
