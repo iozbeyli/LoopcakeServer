@@ -25,7 +25,7 @@ exports.add = function(req,res,next){
           return res.status(500).send({"success":false, "details": "Internal DB error!", "error": err});
         } else {
           request
-          .post("http://207.154.201.29:9560/api/create")
+          .post("http://localhost:9560/api/create")
           .send({"user": req.user._id , "repo": repo._id, "name": req.user.name, "surname": req.user.surname, "message": req.body.message, "email": req.user.email, "members": req.body.members})
           .end(function(err,resp){
             if(err){

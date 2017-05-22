@@ -199,7 +199,7 @@ exports.submitRepo = function(req,res,next){
   console.log("attributes");
   console.log(attributes);
 
-  var request = http.get("http://207.154.201.29:9560/api/pull"+attributes, function(response) {
+  var request = http.get("http://localhost:9560/api/pull"+attributes, function(response) {
     var writeStream = gfs.createWriteStream({
       filename: groupName,
       submissionID: submissionID
