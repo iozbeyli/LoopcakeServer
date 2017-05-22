@@ -1,6 +1,7 @@
 const express = require('express');
 const multer  = require('multer')
 const authController = require('./controllers/authentication/authController');
+const twowayAuth = require('./controllers/authentication/twowayAuth');
 const universityController = require('./controllers/others/universityController');
 const fileController = require('./controllers/others/fileController');
 const userController = require('./controllers/others/userController');
@@ -77,6 +78,10 @@ module.exports = function(app) {
   apiRoutes.post('/submitRepo',  authController.auth, submissionController.submitRepo);
   apiRoutes.post('/getSubmission',   authController.auth, submissionController.getSubmission);
   apiRoutes.get('/getAllSubmissions', submissionController.getAllSubmissions);
+
+  //two-way auth Operations
+  apiRoutes.post('/twoWay', twowayAuth.twoWay);
+  apiRoutes.post('/generatePIN', authController.auth, twowayAuth.generatePIN)
 
   app.use('/api', apiRoutes);
 }

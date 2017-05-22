@@ -1,5 +1,6 @@
 const User = require('./../../models/User');
 const jwt = require('express-jwt');
+const AuthPIN = require('./../../models/AuthPIN');
 
 exports.registration = function(req,res,next){
   console.log("Registration Request Received");
@@ -20,8 +21,8 @@ exports.registration = function(req,res,next){
 
 exports.login = function(req,res,next){
   console.log("Login Request Received");
-
-  User.findOne({email: req.body.email}).exec((err, user) => {
+  var query = {email: req.body.email};
+  User.findOne(query).exec((err, user) => {
     if(err){
       console.log("Internal db error");
       console.log(err);
@@ -39,10 +40,14 @@ exports.login = function(req,res,next){
       return res.status(200).send({"success":false, "details": "Wrong password."});
     }
 
-    const token = user.generateJwt();
-    console.log("success: true, details: User logged in.");
-    return res.status(200).send({"success":true, "token": token});
-
+    if(true/*user.isTwoWay*/){
+      console.log("success: true, details: Directed to two way authentication.");
+      return res.status(203).send({"success":true, "details": "Directed to two way authentication."});
+    }else{
+      const token = user.generateJwt();
+      console.log("success: true, details: User logged in.");
+      return res.status(200).send({"success":true, "token": token});
+    }
   }
 );
 };
