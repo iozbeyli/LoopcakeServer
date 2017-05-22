@@ -30,17 +30,17 @@ exports.login = function(req,res,next){
     }
     if(!user){
 
-      console.log("success: true, details: User not found.");
-      return res.status(200).send({"success":false, "details": "User not found."});
+      console.log("success: false, details: User not found.");
+      return res.status(201).send({"success":false, "details": "User not found."});
       return;
     }
 
     if (!user.validPassword(req.body.password)) {
       console.log("success: false, details: Wrong password.");
-      return res.status(200).send({"success":false, "details": "Wrong password."});
+      return res.status(202).send({"success":false, "details": "Wrong password."});
     }
 
-    if(true/*user.isTwoWay*/){
+    if(!req.body.mobileLogin){
       console.log("success: true, details: Directed to two way authentication.");
       return res.status(203).send({"success":true, "details": "Directed to two way authentication."});
     }else{

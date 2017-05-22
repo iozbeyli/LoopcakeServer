@@ -7,7 +7,10 @@ const AuthPINSchema = new mongoose.Schema({
 });
 
 AuthPINSchema.methods.isValidPIN = function(pin){
-  return pin === this.pin;
+  console.log("this: "+this.pin);
+  console.log("arg: "+pin);
+  console.log("bool: "+(pin == this.pin));
+  return pin == this.pin;
 };
 
 AuthPINSchema.methods.isExpired = function(){

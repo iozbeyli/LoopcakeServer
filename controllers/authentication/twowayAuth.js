@@ -4,6 +4,7 @@ const AuthPIN = require('./../../models/AuthPIN');
 
 exports.twoWay = function(req,res,next){
   console.log("two way Request Received");
+  console.log(req.body);
 
   AuthPIN.findOne({email: req.body.email}).exec((err, pin) => {
     if(err){
@@ -28,12 +29,20 @@ exports.twoWay = function(req,res,next){
       return res.status(203).send({"success":false, "details": "Wrong pin."});
     }
 
-    const token = user.generateJwt();
-    console.log("success: true, details: User logged in.");
-    return res.status(200).send({"success":true, "token": token});
+    User.findOne({email: req.body.email}).exec((err, user) => {
+    if(err){
+      console.log("Internal db error");
+      console.log(err);
+      return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+    }
+      const token = user.generateJwt();
+      console.log("success: true, details: User logged in.");
+      return res.status(200).send({"success":true, "token": token});
+    
+    });
 
-  }
-);
+
+  });
 };
 
 exports.generatePIN = function(req, res, next){
