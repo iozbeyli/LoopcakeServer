@@ -83,6 +83,7 @@ module.exports = function(app) {
   apiRoutes.post('/twoWay', twowayAuth.twoWay);
   apiRoutes.post('/generatePIN', authController.auth, twowayAuth.generatePIN)
   apiRoutes.post('/addMember', authController.auth, groupController.addMembers)
+  apiRoutes.post('/leaveGroup', authController.auth, groupController.leave)
 
   app.use('/api', apiRoutes);
 }

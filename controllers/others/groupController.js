@@ -312,17 +312,39 @@ exports.addMembers = function(req,res,next){
         return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
       }
       console.log(docs);
+      if(!docs){
+        console.log("No user");
+        
+        return res.status(500).send({"success":false, "details": "No user"});
+      }
       Group.findByIdAndUpdate(groupid, {$pushAll: {students: docs}}, {upsert: true}, function(err){
         if (err) {
           console.log("Internal db error");
           console.log(err);
           return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
         }
-        console.log("success: true, details: Students are added.");
+        console.log("success: true, details: Members are added.");
         return res.status(200).send({"success":true, "details": "Members are added."});
       })
 
     });
+}
 
+exports.leave = function(req,res,next){
+  console.log("Leave Group Request Received");
+  console.log(req.body.students);
+  var id = req.user._id;
+  var groupid = req.body.groupid;
+
+    Group.findByIdAndUpdate(groupid, {$pull: {students: id}}, {upsert: true}, function(err){
+      if (err) {
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+      }
+        console.log("success: true, details: Left");
+        return res.status(200).send({"success":true, "details": "Left."});
+    });
+  
   
 }
