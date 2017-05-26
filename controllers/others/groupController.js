@@ -297,3 +297,32 @@ exports.getGroup = function(req,res,next){
   }
 
 }
+
+exports.addMembers = function(req,res,next){
+  console.log("Add Group Members Request Received");
+  console.log(req.body.students);
+  var studentList = req.body.students;
+  var groupid = req.body.groupid;
+
+
+    User.find({"email": studentList}, {_id: 1}, function (err, docs) {
+      if(err){
+        console.log("Internal db error");
+        console.log(err);
+        return res.status(500).send({"success":false, "details": "Internal DB error. Check query!", "error": err});
+      }
+      console.log(docs);
+      Group.findByIdAndUpdate(groupid, {$pushAll: {students: docs}}, {upsert: true}, function(err){
+        if (err) {
+          console.log("Internal db error");
+          console.log(err);
+          return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
+        }
+        console.log("success: true, details: Students are added.");
+        return res.status(200).send({"success":true, "details": "Members are added."});
+      })
+
+    });
+
+  
+}
