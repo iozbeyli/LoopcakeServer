@@ -119,7 +119,7 @@ exports.getAvailableStudents = function(req,res,next){
         return res.status(200).send({"success":true, "details": diff});
       }
 
-      User.find({_id: {$in: diff}}, {_id: 1, name: 1, surname: 1}, function (err, result) {
+      User.find({_id: {$in: diff}}, {_id: 1, name: 1, surname: 1, photo: 1}, function (err, result) {
         if(err){
           console.log("Internal db error");
           console.log(err);
