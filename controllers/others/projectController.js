@@ -98,7 +98,7 @@ exports.updateChecklist = function(req,res,next){
               console.log("cpid "+cpid);
               Group.update(
                 {"project": projectID},
-                {$push: {"checklist": {"cpid": cpid, "status": false, "point": point}}},
+                {$push: {"checklist": {"cpid": cpid, "status": false, "point": point, "label": label, "details":details}}},
                 {safe: true, upsert: true, new : true, multi:true},
                 function(err, result) {
                     if(err) return console.log(err);

@@ -8,7 +8,9 @@ const mongoose = require('mongoose'),
 const checkpoint = new Schema({
     cpid: {type: String},
     status: {type: Boolean},
-    point: {type: Number}
+    point: {type: Number},
+    label: {type: String},
+    details: {type: String}
 })
 
 const GroupSchema = new mongoose.Schema({
