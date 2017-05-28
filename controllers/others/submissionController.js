@@ -200,7 +200,7 @@ exports.submitRepo = function(req,res,next){
   console.log(attributes);
 
   var request = http.get("http://localhost:9560/api/pull"+attributes, function(response) {
-    console.log(response);
+    
     var writeStream = gfs.createWriteStream({
       filename: groupName+".zip",
       submissionID: submissionID
