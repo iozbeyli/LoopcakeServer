@@ -26,9 +26,16 @@ exports.create = function(req,res,next){
   groupDetails.name = req.body.name;
   groupDetails.detail = "Student Project Group";
   console.log(groupDetails);
-  const group = new Group(groupDetails);
+  
 
-  group.save(err => {
+  Project.findById(groupDetails.project, function (err, doc){
+    groupDetails.checklist = [];
+    ch = doc.checklist;
+    for(var i = 0; i<ch.length; i++){
+      groupDetails.checklist.push({"cpid": ch[i]._id, "status": false, "point": ch[i].point, "label": ch[i].label, "details":ch[i].details});
+    }
+    const group = new Group(groupDetails);
+    group.save(err => {
     if (err) {
       console.log("Internal db error");
       console.log(err);
@@ -52,6 +59,8 @@ exports.create = function(req,res,next){
       });
     }
   });
+  })
+
 
 };
 
