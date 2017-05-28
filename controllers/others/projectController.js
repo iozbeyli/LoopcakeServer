@@ -193,7 +193,7 @@ exports.getProject = function(req,res,next){
       query.courseID = req.body.courseid;
 
       console.log(query);
-      Project.find(query, {_id: 1, name: 1}, function (err, docs) {
+      Project.find(query, {_id: 1, name: 1, details: 1, deadline: 1, attachment:1}, function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
