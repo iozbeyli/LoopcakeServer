@@ -30,6 +30,7 @@ exports.create = function(req,res,next){
 
   Project.findById(groupDetails.project, function (err, doc){
     groupDetails.checklist = [];
+    console.log(doc);
     ch = doc.checklist;
     for(var i = 0; i<ch.length; i++){
       groupDetails.checklist.push({"cpid": ch[i]._id, "status": false, "point": ch[i].point, "label": ch[i].label, "details":ch[i].details});
