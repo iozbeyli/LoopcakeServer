@@ -209,7 +209,7 @@ exports.getCourse = function(req,res,next){
       for(var i=0; i<docs.length; i++){
         toComp.push(docs[i].courseID);
       }
-      Course.find({_id: {$in: toComp}}, {_id: 1, name: 1, department: 1, code: 1, year: 1, term: 1},  function (err, docs) {
+      Course.find({_id: {$in: toComp}}, {_id: 1, name: 1, instructor: 1,department: 1, code: 1, year: 1, term: 1},  function (err, docs) {
         if(err){
           console.log("Internal db error");
           console.log(err);
