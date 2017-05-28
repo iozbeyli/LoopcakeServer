@@ -24,7 +24,7 @@ exports.create = function(req,res,next){
       return res.status(500).send({"success":false, "details": "Internal DB error, check query!", "error": err});
     } else {
       console.log("success: true, details: Project created.");
-      return res.status(200).send({"success":true, "details": "Project Created."});
+      return res.status(200).send({"success":true, "details": "Project Created.", "id": project._id});
     }
   })
 };
