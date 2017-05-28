@@ -202,7 +202,7 @@ exports.submitRepo = function(req,res,next){
   var request = http.get("http://localhost:9560/api/pull"+attributes, function(response) {
     console.log(response);
     var writeStream = gfs.createWriteStream({
-      filename: groupName,
+      filename: groupName+".zip",
       submissionID: submissionID
     });
 
@@ -215,7 +215,7 @@ exports.submitRepo = function(req,res,next){
       console.log("submissionID: "+submissionID);
       Submission.findByIdAndUpdate(
         submissionID,
-        {$push: {"attachment": {"attachmentid": attachmentid, "filename": groupName}}, "date": now},
+        {$push: {"attachment": {"attachmentid": attachmentid, "filename": groupName+".zip"}}, "date": now},
         {safe: true, upsert: true, new : true},
         function(err, model) {
             if(err) return console.log(err);
