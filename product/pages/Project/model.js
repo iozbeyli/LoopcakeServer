@@ -1,26 +1,22 @@
 const mongoose = require('mongoose'),
-      Schema = mongoose.Schema;
+      Schema = mongoose.Schema,
+      Folder = require('./../../utility/FileOp/folder.js').Folder,
+      Checkpoint = require('./../../utility/Tools/Checkpoint.js').Checkpoint;
+const Section = require('./../../utility/section.js').Section;
 
-const attachmentSchema = new Schema({
-    attachmentid: {type:mongoose.SchemaTypes.ObjectId},
-    filename: {type: String}
-})
-
-const checkpoint = new Schema({
-    label: {type: String},
-    point: {type: Number},
-    details: {type: String}
-})
 
 const ProjectSchema = new mongoose.Schema({
-  name: {type: String, required:true},
-  details: {type: String},
-  courseID: {type: mongoose.SchemaTypes.ObjectId, ref: 'Course'},
-  attachment: [attachmentSchema],
+  name:         {type: String, required:true},
+  details:      {type: DetailsSchema},
+  course:       {type: mongoose.SchemaTypes.ObjectId, ref: 'Course'},
+  attachment:   [Folder],
   maxGroupSize: {type: Number},
-  deadline: {type: Date},
-  tags: [{type: String}],
-  checklist: [checkpoint]
+  deadline:     {type: Date},
+  checklist:    [Checkpoint]
+});
+
+const DetailsSchema = new mongoose.Schema({
+  sections:  [Section]
 });
 
 module.exports = mongoose.model('Project', ProjectSchema);
