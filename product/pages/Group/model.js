@@ -26,6 +26,7 @@ const RequestSchema = new mongoose.Schema({
 });
 
 const DetailsSchema = new mongoose.Schema({
+  date: {type: Date, default: Date.now},
   sections:  [Section]
 });
 

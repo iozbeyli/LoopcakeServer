@@ -12,6 +12,7 @@ const ProjectSchema = new mongoose.Schema({
   attachment:   [Folder],
   maxGroupSize: {type: Number},
   deadline:     {type: Date},
+  date:         {type: Date, default: Date.now},
   checklist:    [Checkpoint]
 });
 
