@@ -6,7 +6,7 @@ const CourseSchema = new mongoose.Schema({
   name:         {type: String, required:true},
   abbreviation: {type: String, required:true},
   code:         {type: String, required:true},
-  university:   {type: mongoose.SchemaTypes.ObjectId, required:true, ref: 'University'},        
+  department:   {type: mongoose.SchemaTypes.ObjectId, required:true, ref: 'University'},        
   instructor:   {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
   students:    [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
   assistants:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
