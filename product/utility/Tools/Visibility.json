@@ -1,0 +1,9 @@
+{
+    "public":       0,
+    "contributer":  1,
+    "member":       2,
+    "courseStudent":3,
+    "assistant":    4,
+    "instructor":   5,
+    "owner":        6
+}

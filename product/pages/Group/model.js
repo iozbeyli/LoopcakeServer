@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Folder = require('./../../utility/FileOp/folder.js').Folder;
 const Section = require('./../../utility/section.js').Section;
+const Properties = require('./../../utility/Tools/Properties.js').Properties;
 
 
 const checkpoint = new mongoose.Schema({
@@ -17,7 +18,8 @@ const GroupSchema = new mongoose.Schema({
     repo:        {type: mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
     checklist:   [checkpoint],
     joinRequests:[RequestSchema],
-    submission:  {type: SubmissionSchema}
+    submission:  {type: SubmissionSchema},
+    properties:   {type: Properties}
   });
 
 const RequestSchema = new mongoose.Schema({

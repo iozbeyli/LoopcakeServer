@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
+const Properties = require('./../../utility/Tools/Properties.js').Properties;
 
 const RepoSchema = new mongoose.Schema({
   name:          {type: String, required: true},
   members:      [{type:mongoose.SchemaTypes.ObjectId, ref: 'User'}],
   dedescription: {type: String},
   date:     {type: Date, default: Date.now},
-  comments:      [CommentSchema]
+  comments:      [CommentSchema],
+  properties:   {type: Properties}
 });
 
 

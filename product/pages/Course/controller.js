@@ -9,23 +9,9 @@ const respondBadRequest = utility.respondBadRequest;
 exports.create = function (req, res, next) {
   console.log('Course Creation Received');
   console.log(req.body);
-  let object = {
-    name: req.body.name,
-    university: req.body.university,
-    code: req.body.code,
-    instructor: req.body.instructor,
-    relatedCourses: req.body.relatedCourses,
-    students: req.body.students,
-    assistants: req.body.assistants,
-    programmingLanguage: req.body.programmingLanguage,
-    tags: req.body.tags,
-    year: req.body.year,
-    term: req.body.term,
-    details: req.body.details,
-    syllabus: req.body.syllabus
-  };
+  let object = model.parseJSON(req.body);
 
-  if (isEmpty(object.name) || isEmpty(object.university) || isEmpty(object.code))
+  if (!object)
     return respondBadRequest(res);
 
   const data = new model(object);
@@ -40,25 +26,12 @@ exports.edit = function (req, res, next) {
   let query = {
     _id: req.body._id
   };
-  var object = {};
+  let object = model.parseJSON(req.body);
 
-  if (!isEmpty(req.body.name))       object.name = req.body.name;
-  if (!isEmpty(req.body.university)) object.university = req.body.university;
-  if (!isEmpty(req.body.code))       object.code = req.body.code;
-  if (req.body.instructor)           object.instructor = req.body.instructor;
-  if (req.body.relatedCourses)       object.relatedCourses = req.body.relatedCourses;
-  if (req.body.students)             object.students = req.body.students;
-  if (req.body.assistants)           object.assistants = req.body.assistants;
-  if (req.body.programmingLanguage)  object.programmingLanguage = req.body.programmingLanguage;
-  if (req.body.tags)                 object.tags = req.body.tags;
-  if (req.body.year)                 object.year = req.body.year;
-  if (req.body.term)                 object.term = req.body.term;
-
-  if (isEmpty(query._id))
+  if (isEmpty(query._id) || !object)
     return respondBadRequest(res);
 
   var upt = { $set: object }
-
 
   model.findByIdAndUpdate(query, upt, {
       new: true

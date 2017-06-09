@@ -3,5 +3,6 @@
   "port": "5567",
   "JWTSecret": "g.o.r.a'ya_yaklasan_cisim",
   "JWTExpiration": "1d",
-  "saltRounds": "12"
+  "saltRounds": "12",
+  "adminKey":   "123456"
 }
