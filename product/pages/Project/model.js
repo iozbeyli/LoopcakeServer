@@ -5,6 +5,9 @@ const mongoose = require('mongoose'),
 const Section = require('./../../utility/section.js').Section;
 const Properties = require('./../../utility/Tools/Properties.js').Properties;
 
+const DetailsSchema = new mongoose.Schema({
+  sections:  [Section]
+});
 
 const ProjectSchema = new mongoose.Schema({
   name:         {type: String, required:true},
@@ -18,8 +21,5 @@ const ProjectSchema = new mongoose.Schema({
   properties:   {type: Properties}
 });
 
-const DetailsSchema = new mongoose.Schema({
-  sections:  [Section]
-});
 
 module.exports = mongoose.model('Project', ProjectSchema);

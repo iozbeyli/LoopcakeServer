@@ -9,19 +9,6 @@ const checkpoint = new mongoose.Schema({
     status: {type: Boolean}
 })
 
-const GroupSchema = new mongoose.Schema({
-    members:    [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
-    name:        {type: String, required:true},
-    details:     {type: DetailsSchema},
-    project:     {type: mongoose.SchemaTypes.ObjectId, ref: 'Project'},
-    course:      {type: mongoose.SchemaTypes.ObjectId, ref: 'Course'},
-    repo:        {type: mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
-    checklist:   [checkpoint],
-    joinRequests:[RequestSchema],
-    submission:  {type: SubmissionSchema},
-    properties:   {type: Properties}
-  });
-
 const RequestSchema = new mongoose.Schema({
     senderid:   {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
     message:    {type: String}
@@ -39,6 +26,19 @@ const SubmissionSchema = new mongoose.Schema({
   message:    {type: String},
   date:       {type: Date, default: Date.now }
 });
+
+const GroupSchema = new mongoose.Schema({
+    members:    [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+    name:        {type: String, required:true},
+    details:     {type: DetailsSchema},
+    project:     {type: mongoose.SchemaTypes.ObjectId, ref: 'Project'},
+    course:      {type: mongoose.SchemaTypes.ObjectId, ref: 'Course'},
+    repo:        {type: mongoose.SchemaTypes.ObjectId, ref: 'Repo'},
+    checklist:   [checkpoint],
+    joinRequests:[RequestSchema],
+    submission:  {type: SubmissionSchema},
+    properties:   {type: Properties}
+  });
 
 
 module.exports = mongoose.model('Group', GroupSchema);

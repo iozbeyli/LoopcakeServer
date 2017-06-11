@@ -5,9 +5,11 @@ const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
-exports.get = function (collection, select,  logType){
-    return function(req, res, next){
-         console.log('Get '+logType+' request received');
+exports.get = function(req, res, next){
+    let collection = req.args.model;
+    let select = req.args.listSelect;
+    let logType = req.args.logType;
+         console.log('Get request received');
         query = {
         _id: req.params.id
         };
@@ -19,11 +21,14 @@ exports.get = function (collection, select,  logType){
            return respondQuery(res, err, data, logType, 'Found');
         });
     }
-}
 
-exports.list = function (collection, select, logType){
-    return function (req, res, next) {
-  console.log('List '+logType+' request received');
+
+exports.list = function(req, res, next){
+
+  let collection = req.args.model;
+  let select = req.args.listSelect;
+  let logType = req.args.logType;
+  console.log(logType+ 'List request received');
   let options = parseQueryOptions(req);
 
   if (options.skip < 0 || options.limit > 30)
@@ -32,8 +37,8 @@ exports.list = function (collection, select, logType){
   collection.find(req.query, select, options, function (err, data) {
     return respondQuery(res, err, data, logType, 'Found');
   });
-    }
 }
+
 
 exports.remove = function (collection, logType){
     return function (req, res, next) {

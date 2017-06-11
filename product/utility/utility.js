@@ -25,7 +25,7 @@ exports.respondQuery = function (res, err, data, obj, sMsg) {
       success = true;
     }
   console.log('success: ' + success + ', detail: ' + detail);
-  if (err) console.log(err);
+  if (err) console.log(""+err);
   return res.status(status)
     .send({
       'success': success,
@@ -52,12 +52,13 @@ exports.parseQueryOptions = function (req){
       date: -1 //Sort by Date Added DESC
     }
   }
+  if(req.query){
+    if (req.query.start)
+      options.skip = req.query.start;
 
-  if (req.query.start)
-    options.skip = req.query.start;
-
-  if (req.query.end)
-    options.limit = req.query.end;
+    if (req.query.end)
+      options.limit = req.query.end;
+  }
 
   return options;
 }

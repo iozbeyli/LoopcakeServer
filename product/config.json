@@ -1,5 +1,5 @@
 {
-  "db": "mongodb://mebegu:loop123456@ds157500.mlab.com:57500/loopcakedb",
+  "db": "mongodb://mebegu:loop123456@ds064649.mlab.com:64649/lc_development",
   "port": "5567",
   "JWTSecret": "g.o.r.a'ya_yaklasan_cisim",
   "JWTExpiration": "1d",

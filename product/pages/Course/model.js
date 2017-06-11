@@ -2,25 +2,12 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const Folder = require('./../../utility/FileOp/folder.js').Folder;
 const Section = require('./../../utility/section.js').Section;
-const PropertiesModel = require('./../../utility/Tools/Properties.js').Properties;
+const PropertiesModel = require('./../../utility/Tools/Properties.js');
 const Properties = PropertiesModel.Properties
 const Visibility = require('./../../utility/Tools/Visibility.json');
 const utility = require('./../../utility/utility.js');
+const Auth = require('./../User/Auth.js');
 const isEmpty = utility.isEmpty;
-
-const CourseSchema = new mongoose.Schema({
-  name:         {type: String, required:true},
-  abbreviation: {type: String, required:true},
-  code:         {type: String, required:true},
-  department:   {type: mongoose.SchemaTypes.ObjectId, required:true, ref: 'University'},        
-  instructors: [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
-  students:    [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
-  assistants:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
-  details:      {type: DetailsSchema},
-  syllabus:     {type: mongoose.SchemaTypes.ObjectId},
-  attachments: [{type: Folder}],
-  properties:   {type: Properties}
-});
 
 const DetailsSchema = new mongoose.Schema({
   sections:  [Section],
@@ -28,6 +15,20 @@ const DetailsSchema = new mongoose.Schema({
   term:      {type: String},
   programmingLanguages: [{type: String}],
   relatedCourses:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'Course'}],
+});
+
+const CourseSchema = new mongoose.Schema({
+  name:         {type: String, required:true},
+  abbreviation: {type: String, required:true},
+  code:         {type: String, required:true},
+  department:   {type: mongoose.SchemaTypes.ObjectId, ref: 'University'},        
+  instructors: [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+  students:    [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+  assistants:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
+  details:      {type: DetailsSchema},
+  syllabus:     {type: mongoose.SchemaTypes.ObjectId},
+  attachments: [Folder],
+  properties:   Properties
 });
 
 CourseSchema.methods.isCourseStudent = function(user) {
@@ -42,8 +43,14 @@ CourseSchema.methods.isAssistant = function(user) {
   return this.assistants.indexOf(user._id) > -1 ;
 };
 
-CourseSchema.methods.canAcess = function(user) {
-  const visibility = this.properties.visibility;
+CourseSchema.methods.canAccess = function(user, readOnly) {
+  if(!this.properties.active())
+    return false;
+
+  if(Auth.canAccess(this.properties, user))
+    return true;
+
+  const visibility = readOnly ? this.properties.readVisibility : this.properties.writeVisibility;
 
   switch(visibility){
     case Visibility.courseStudent:
@@ -57,31 +64,34 @@ CourseSchema.methods.canAcess = function(user) {
       return this.isInstructor(user) || this.properties.isOwner(user);
 
     default:
-      return this.properties.isOwner(user);
+      return false;
   }
 };
 
-exports.parseJSON = function(body) {
-    i
-    let detail = {
-      year: body.year,
-      term: body.term
+CourseSchema.statics.parseJSON = function(body) {
+    let detail = {};
+    if(body.year) detail.year = body.year;
+    if(body.term) detail.term = body.term;
+
+    let properties = {};
+    if(body.properties){
+      if(body.properties.readVisibility)  properties.readVisibility = body.properties.readVisibility;
+      if(body.properties.writeVisibility) properties.writeVisibility = body.properties.writeVisibility;
     }
-    let property = {
-      visibility: body.visibility
-    }
+
     let object = {
-      name:         body.name,
-      abbreviation: body.abbreviation,
-      code:         body.code,
-      department:   body.department,        
-      instructors:  body.instructors,
-      students:     body.students,
-      assistants:   body.assistants,
+      name:         body.name ? body.name : "",
+      abbreviation: body.abbreviation ? body.abbreviation : "",
+      code:         body.code ? body.code : "",
+      department:   body.department ? body.department : null,
       details:      detail,
-      properties:   property
+      properties:   properties
     };
 
+    if(body.properties) object.properties = properties;
+
+    object = new exports.Schema(object);
+    console.log(object);
     if(repOK(object))
       return object;
     else
@@ -90,8 +100,8 @@ exports.parseJSON = function(body) {
 
 
 const repOK = function(object) {
-  return !(isEmpty(object.name) || isEmpty(object.abbreviation) || isEmpty(object.department) ||
-           isEmpty(object.code) || isEmpty(object.instructors)  || !PropertiesModel.repOK(object.properties))
+  return !(isEmpty(object.name) || isEmpty(object.abbreviation) ||
+           isEmpty(object.code) || !PropertiesModel.repOK(object.properties))
 };
 
 module.exports = mongoose.model('Course', CourseSchema);

@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const Visibility = require('./../../utility/Tools/Visibility.json');
+const vis = Object.keys(Visibility).map(function(k) { return Visibility[k] });
 
 
 const PropertiesSchema = new Schema({
-    visibility:         {type: Number, default: 0},
+    readVisibility:     {type: Number, default: 0},
+    writeVisibility:    {type: Number, default: 0},
     owner:              {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
     creationDate:       {type: Date, default: Date.now},
     modificationDate:   {type: Date, default: Date.now},
@@ -13,6 +15,14 @@ const PropertiesSchema = new Schema({
 
 PropertiesSchema.methods.isOwner = function(user) {
   return this.owner === user._id;
+};
+
+PropertiesSchema.methods.active = function(user) {
+  return this.isActive;
+};
+
+PropertiesSchema.methods.isPublic = function(readOnly) {
+  return readOnly ? this.readVisibility === Visibility.public : this.writeVisibility === Visibility.public;
 };
 
 PropertiesSchema.methods.hasKey = function(user) {
@@ -25,14 +35,14 @@ PropertiesSchema.methods.hasKey = function(user) {
 };
 
 const repOK = function(object){
-    const len = Visibility.length;
-    const vis = object.visibility;
+    const rvis = object.readVisibility;
+    const wvis = object.writeVisibility;
 
-    if(!vis || isNaN(vis) || vis%1!=0 || vis < 0 || vis > length){
-        return false;
+    if( vis.indexOf(rvis) > -1 && vis.indexOf(wvis) > -1){
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 

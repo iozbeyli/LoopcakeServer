@@ -19,23 +19,16 @@ const UserSchema = new Schema({
 
 UserSchema.methods.generateJwt = function() {
   return jsonwebtoken.sign({
-    _id:      this._id,
-    mail :    this.mail,
-    name:     this.name,
-    surname:  this.surname,
-    username: this.username,
-    studentID:this.studentID,
-    keys:     this.keys,
+    _id:            this._id,
+    mail :          this.mail,
+    name:           this.name,
+    surname:        this.surname,
+    username:       this.username,
+    userType:       this.userType,
+    keys:           this.keys,
+    universityID:   this.universityID,
+    university:     this.university
   }, (process.env.MY_TOKEN || config.JWTSecret), { expiresIn: config.JWTExpiration });
 };
-
-const USER_TYPES = {
-    "regular":      0,
-    "student":      1,
-    "assistant":    3,
-    "instructor":   4,
-    "moderator":    5,
-    "admin":        6
-}
 
 module.exports = mongoose.model('User',UserSchema);

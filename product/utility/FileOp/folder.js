@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 
-const FolderSchema = new mongoose.Schema({
-    name: String,
-    attachments: [attachmentSchema]
-})
 
 const AttachmentSchema = new mongoose.Schema({
     attachmentid: {type:mongoose.SchemaTypes.ObjectId},
@@ -11,6 +7,11 @@ const AttachmentSchema = new mongoose.Schema({
     date:     {type: Date, default: Date.now},
     folder: {type: String},
 
+})
+
+const FolderSchema = new mongoose.Schema({
+    name: String,
+    attachments: [AttachmentSchema]
 })
 
 module.exports = {
