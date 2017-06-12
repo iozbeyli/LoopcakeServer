@@ -3,6 +3,16 @@ const controller = require('./controller');
 const query = require('./../../utility/query');
 const model = require('./model');
 
+const param = function(req,res,next){
+    console.log('User request received');
+    req.args = {model: model,
+            getSelect: {},
+            listSelect: {},
+            logType: "University"
+    }
+    next();
+}
+
 module.exports = function (app) {
     const routes = express.Router();
 
@@ -11,9 +21,9 @@ module.exports = function (app) {
 
     routes.post('/create',   controller.create);
     routes.post('/edit',     controller.edit);
-    routes.post('/remove',   query.remove(model, 'University'));
-    routes.get('/:id',       query.get(model, getSelect, 'University'));
-    routes.get('/',          query.list(model, listSelect, 'University'));
+    //routes.post('/remove',   query.remove(model, 'University'));
+    routes.get('/:id',     param,  query.get);
+    routes.get('/',        param,   query.list);
 
     app.use('/university', routes);
 }

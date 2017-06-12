@@ -22,6 +22,7 @@ exports.register = function (req, res, next) {
     if (!data)
       return respondBadRequest(res);
 
+    data.properties.owner = data._id;
     data.save((err) => {
       return respondQuery(res, err, data._id, 'New User', 'Registered');
     });

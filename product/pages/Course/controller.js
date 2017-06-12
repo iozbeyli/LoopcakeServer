@@ -13,6 +13,8 @@ exports.create = function (req, res, next) {
   if (!data)
     return respondBadRequest(res);
 
+  //data.properties.owner = req.user._id;
+
   data.save((err) => {
     return respondQuery(res, err, data, 'New Course', 'Created');
   });

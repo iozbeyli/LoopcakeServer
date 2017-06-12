@@ -1,4 +1,4 @@
-const model = require('./model');
+const University = require('./model');
 const utility = require('./../../utility/utility.js');
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
@@ -7,44 +7,47 @@ const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
 exports.create = function (req, res, next) {
-  console.log('University Creation Received');
-  console.log(req.body);
-  let object = {
-    name: req.body.name,
-    country: req.body.country
-  };
+  let data = University.parseJSON(req.body);
 
-  if (isEmpty(object.name) || isEmpty(object.country))
+  if (!data)
     return respondBadRequest(res);
 
-  const data = new model(object);
-  data.save((err) => {
-    return respondQuery(res, err, data._id, 'New University', 'Created');
+  //data.properties.owner = req.user._id;
+
+  University.save((err) => {
+    return respondQuery(res, err, data, 'New University', 'Created');
   });
 
 };
 
 exports.edit = function (req, res, next) {
-  console.log("Edit University Request Recevied");
-  let query = {
-    _id: req.body._id
-  };
-  let upt = {
-    set: {
-      name: req.body.name,
-      country: req.body.country
-    }
-  };
-
-  if (isEmpty(query._id) || isEmpty(upt.name) || isEmpty(upt.country))
+  let id =  req.body._id;
+  if (isEmpty(id))
     return respondBadRequest(res);
 
-  model.findByIdAndUpdate(query, upt, {
-      new: true
-    },
-    function (err, data) {
-      return respondQuery(res, err, data._id, 'University', 'Edited');
-    });
+  return University.findById(id).exec()
+  .then(function (uni) {
+    if(!uni.canAccess(req.user, false))
+      return console.log("err")
+
+    return uni.set(req.body).save()
+  }).then(function(data){
+    return respondQuery(res, null, data, 'Course', 'Edited');
+  }).catch(function(err){
+    return respondQuery(res, err, null, 'Course', 'Edited');
+  });
 };
+
+exports.addDepartment = function(req, res, next) {
+
+}
+
+exports.editDepartment = function(req, res, next) {
+  
+}
+
+exports.editDatabase = function(req, res, next) {
+  
+}
 
 
