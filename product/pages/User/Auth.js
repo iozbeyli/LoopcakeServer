@@ -1,4 +1,4 @@
 exports.canAccess = function(property, user, readOnly){
-    return property.isPublic(readOnly) || user.isAdmin || property.hasKey(user)
+    return property.isPublic(readOnly) || user.isAdmin || property.hasKey(user) || property.isOwner(user)
 
 }

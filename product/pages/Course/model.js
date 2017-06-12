@@ -47,21 +47,20 @@ CourseSchema.methods.canAccess = function(user, readOnly) {
   if(!this.properties.active())
     return false;
 
-  if(Auth.canAccess(this.properties, user))
+  if(Auth.canAccess(this.properties, user, readOnly))
     return true;
 
   const visibility = readOnly ? this.properties.readVisibility : this.properties.writeVisibility;
 
   switch(visibility){
-    case Visibility.courseStudent:
-      return this.isCourseStudent(user) || this.isAssistant(user) || 
-             this.isInstructor(user)    || this.properties.isOwner(user);
+    case Visibility.class:
+      return this.isCourseStudent(user) || this.isAssistant(user) || this.isInstructor(user)
 
     case Visibility.assistants:
-      return this.isAssistant(user) || this.isInstructor(user) || this.properties.isOwner(user);
+      return this.isAssistant(user) || this.isInstructor(user)
 
     case Visibility.instructor:
-      return this.isInstructor(user) || this.properties.isOwner(user);
+      return this.isInstructor(user)
 
     default:
       return false;
@@ -90,7 +89,7 @@ CourseSchema.statics.parseJSON = function(body) {
 
     if(body.properties) object.properties = properties;
 
-    object = new exports.Schema(object);
+    object = new this(object);
     console.log(object);
     if(repOK(object))
       return object;

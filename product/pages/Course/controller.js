@@ -7,13 +7,14 @@ const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
 exports.create = function (req, res, next) {
+  console.log("registration request")
   let data = Course.parseJSON(req.body);
 
   if (!data)
     return respondBadRequest(res);
 
   data.save((err) => {
-    return respondQuery(res, err, data._id, 'New Course', 'Created');
+    return respondQuery(res, err, data, 'New Course', 'Created');
   });
 
 };
