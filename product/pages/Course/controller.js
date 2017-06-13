@@ -28,6 +28,9 @@ exports.edit = function (req, res, next) {
 
   return Course.findById(id).exec()
   .then(function (course) {
+    if(!course)
+      return null;
+
     if(!course.canAccess(req.user, false))
       return console.log("err")
 
@@ -46,6 +49,9 @@ exports.addStudentsFromEMail = function(req,res,next){
 
   Course.findById(courseid).exec()
   .then(function (course){
+    if(!course)
+      return null;
+    
     if(!course.canAccess(req.user, false))
       return console.log("err")
 

@@ -13,7 +13,7 @@ const fileRoutes          = require('./file/router');
 
 module.exports = function(app) {
   userRouter(app);
-  //universityRouter(app);
+  universityRouter(app);
   //announcementRouter(app);
   //repoRoutes(app);
   //projectRoutes(app);

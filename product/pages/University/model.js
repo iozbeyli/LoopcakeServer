@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const Properties = require('./../../utility/Tools/Properties.js').Properties;
+const utility = require('./../../utility/utility.js');
+const isEmpty = utility.isEmpty;
+const PropertiesModel = require('./../../utility/Tools/Properties.js');
+const Properties = PropertiesModel.Properties;
+const Auth = require('./../User/Auth.js');
 
 const DatabaseSchema = new mongoose.Schema({
   baseURL:  {type: String, required: true},
@@ -30,6 +34,14 @@ UniversitySchema.methods.canAccess = function(user, readOnly) {
     return true;
 };
 
+UniversitySchema.methods.addDepartment = function(body) {
+  let object = {};
+  object.name = body.name;
+  object.abbreviation = body.abbreviation;
+  this.departments.push(object);
+  return this;
+};
+
 UniversitySchema.statics.parseJSON = function(body) {
 
     let object = {
@@ -45,6 +57,11 @@ UniversitySchema.statics.parseJSON = function(body) {
     else
       return null;
 };
+
+UniversitySchema.statics.findByDepartmentID = function(departmentid) {
+  return this.findOne({"departments._id": departmentid}).exec();
+};
+
 
 
 const repOK = function(object) {

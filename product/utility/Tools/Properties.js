@@ -5,7 +5,7 @@ const vis = Object.keys(Visibility).map(function(k) { return Visibility[k] });
 
 const PropertiesSchema = new Schema({
     readVisibility:     {type: Number, default: Visibility.public},
-    writeVisibility:    {type: Number, default: Visibility.owner},
+    writeVisibility:    {type: Number, default: Visibility.public},
     owner:              {type: mongoose.SchemaTypes.ObjectId, ref: 'User'},
     creationDate:       {type: Date, default: Date.now},
     modificationDate:   {type: Date, default: Date.now},

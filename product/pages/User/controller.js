@@ -32,14 +32,14 @@ exports.register = function (req, res, next) {
 
 exports.edit = function (req, res, next) {
   console.log("Edit User Request Recevied");
-  let id =  req.body._id;
+  let id =  req.user._id;
   if (isEmpty(id) || req.body.hash || req.body.isAdmin)
     return respondBadRequest(res);
 
   return User.findById(id).exec()
   .then(function (user) {
     if(!user)
-      return console.log("no")
+      return null;
     
     if(!user.canAccess(req.user, false))
       return console.log("err")
@@ -70,7 +70,7 @@ exports.login = function (req, res, next) {
   User.findOne({'email': email}).select("+hash").exec()
   .then(function(user){
     if(!user)
-      return console.log("no user")
+      return false;
     
     if(!user.properties.active())
       return console.log("not active");
