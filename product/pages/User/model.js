@@ -78,6 +78,24 @@ UserSchema.statics.parseJSON = function(body) {
       return null;
 };
 
+UserSchema.methods.setBy = function(body) {
+
+    let object = {
+      email:        body.email ? body.email : this.email,
+      userType:     body.userType ? body.userType : this.userType,
+      name:         body.name ? body.name : this.name,
+      surname:      body.surname ? body.surname : this.surname,
+      username:     body.username ? body.username : this.username,
+      universityID: body.universityID ? body.universityID : this.universityID,
+    };
+
+    object = this.set(object);
+    if(repOK(object))
+      return object;
+    else
+      return null;
+};
+
 
 const repOK = function(object) {
   return !(isEmpty(object.email)    || isEmpty(object.name) || 

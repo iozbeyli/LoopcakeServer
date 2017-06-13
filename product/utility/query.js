@@ -7,7 +7,7 @@ const respondBadRequest = utility.respondBadRequest;
 
 exports.get = function(req, res, next){
     let collection = req.args.model;
-    let select = req.args.listSelect;
+    let select = req.args.select;
     let logType = req.args.logType;
          console.log('Get request received');
         query = {

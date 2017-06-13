@@ -5,10 +5,9 @@ const model = require('./model');
 
 
 const param = function(req,res,next){
-    console.log('User request received');
     req.args = {model: model,
             getSelect: {},
-            listSelect: {_id: 1, name: 1, university: 1, code: 1, year: 1, term: 1},
+            listSelect: {hash: 0, properties: 0, keys: 0},
             logType: "User"
     }
     next();

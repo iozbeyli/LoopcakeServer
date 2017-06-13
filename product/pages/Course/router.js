@@ -7,9 +7,18 @@ const param = function(req,res,next){
     console.log('List request received');
     req.args = {model: model,
             getSelect: {},
-            listSelect: {_id: 1, name: 1, university: 1, code: 1, year: 1, term: 1},
+            listSelect: {_id: 1, name: 1, department: 1, code: 1, "details.year": 1, "details.term": 1},
             logType: "Course"
     }
+    next();
+}
+
+const student = function(req, res, next){
+    req.operation = 0;
+    next();
+}
+const instructor = function(req, res, next){
+    req.operation = 1;
     next();
 }
 
@@ -23,7 +32,12 @@ module.exports = function (app) {
     routes.get('/:id',   param,    query.get);
     routes.get('/',      param,    query.list);
 
-    routes.post('/enroll',  controller.addStudentsFromEMail)
+    routes.post('/student/add',    student,      controller.addByEmail)
+    routes.post('/instructor/add', instructor,   controller.addByEmail)
+    routes.post('/student/remove',    student,      controller.removeById)
+    routes.post('/instructor/remove', instructor,   controller.removeById)
+    routes.post('/attended',   controller.listAttendedCourses)
+    routes.post('/given',   controller.listGivenCourses)
 
     app.use('/course', routes);
 }

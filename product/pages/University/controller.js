@@ -33,11 +33,10 @@ exports.edit = function (req, res, next) {
     if(!uni.canAccess(req.user, false))
       return console.log("err")
 
-    return uni.set(req.body).save()
+    return uni.setBy(req.body).save()
   }).then(function(data){
     return respondQuery(res, null, data, 'University', 'Edited');
   }).catch(function(err){
-    return console.log(err)
     return respondQuery(res, err, null, 'University', 'Edited');
   });
 };

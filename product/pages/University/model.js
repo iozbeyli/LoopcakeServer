@@ -46,13 +46,29 @@ UniversitySchema.statics.parseJSON = function(body) {
 
     let object = {
       name:        body.name ? body.name : null,
-      abbreviation:     body.abbreviation ? body.abbreviation : 0,
+      abbreviation:     body.abbreviation ? body.abbreviation : null,
       country:         body.country ? body.country : null,
       properties:   {}
     };
 
     object = new this(object);
     if(repOK(object))
+      return object;
+    else
+      return null;
+};
+
+
+UniversitySchema.methods.setBy = function(body) {
+
+    let object = {
+      name:        body.name ? body.name : this.name,
+      abbreviation:     body.abbreviation ? body.abbreviation : this.abbreviation,
+      country:         body.country ? body.country : this.country,
+    };
+
+    this.set(object);
+    if(repOK(this))
       return object;
     else
       return null;

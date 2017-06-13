@@ -1,4 +1,5 @@
 const Course = require('./model');
+const User = require('./../User/model');
 const utility = require('./../../utility/utility.js');
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
@@ -34,7 +35,7 @@ exports.edit = function (req, res, next) {
     if(!course.canAccess(req.user, false))
       return console.log("err")
 
-    return course.set(req.body).save()
+    return course.setBy(req.body).save()
   }).then(function(data){
     return respondQuery(res, null, data, 'Course', 'Edited');
   }).catch(function(err){
@@ -43,9 +44,49 @@ exports.edit = function (req, res, next) {
 }
 
 
-exports.addStudentsFromEMail = function(req,res,next){
-  var studentList = req.body.students;
+exports.addByEmail = function(req,res,next){
+  var users = req.body.users;
   var courseid = req.body.courseid;
+  let course;
+  let tag = "";
+
+  Course.findById(courseid).exec()
+  .then(function (data){
+    if(!data)
+      return null;
+    
+    
+    if(!data.canAccess(req.user, false))
+      return console.log("err")
+
+    course = data;
+    return User.find({"email": users}).distinct("_id").exec();
+  }).then(function (ids) {
+    console.log(ids+" ids")
+    switch(req.operation){
+      case 0:
+        course.students.addToSet(ids);
+        tag = "Student(s)"
+        break;
+      case 1:
+        course.instructors.addToSet(ids);
+        tag = "Instructor(s)"
+        break;
+      default:
+        console.log("wtf");
+    }
+    return course.save();
+  }).then(function(){
+    return respondQuery(res, null, course, tag, 'Added');
+  }).catch(function(err){
+      return respondQuery(res, err, null, tag, 'Added');
+  });
+};
+
+exports.removeById = function(req,res,next){
+  var user = req.body.user;
+  var courseid = req.body.courseid;
+  let tag = "";
 
   Course.findById(courseid).exec()
   .then(function (course){
@@ -55,32 +96,43 @@ exports.addStudentsFromEMail = function(req,res,next){
     if(!course.canAccess(req.user, false))
       return console.log("err")
 
-    return { query: User.find({"email": studentList}, {_id: 1}),
-             course: course}
-  }).then(function (args) {
-    const ids = args.query.exec();
-    args.course.students.push(ids);
-    return args.course.save();
-  }).then(function(){
-    return respondQuery(res, err, course, 'Students', 'Added');
+    switch(req.operation){
+      case 0:
+        course.students.pull(user);
+        tag = "Student(s)"
+        break;
+      case 1:
+        course.instructors.pull(user);
+        tag = "Instructor(s)"
+        break;
+      default:
+        console.log("wtf");
+    }
+    return course.save();
+  }).then(function(course){
+    return respondQuery(res, null, course, tag, 'Removed');
   }).catch(function(err){
-      console.log(err)
+      return respondQuery(res, err, null, tag, 'Removed');
   });
 };
 
 
 exports.listAttendedCourses = function(req,res,next){
-  const id = req.user._id;
+  const id = req.body._id;
   Course.find({students: id}).select("_id name").exec()
-  .then(function(err, course){
-    return respondQuery(res, err, course, 'Courses', 'Retrieved');
-  })
+  .then(function(course){
+    return respondQuery(res, null, course.length > 0 ? course : null, 'Courses', 'Retrieved');
+  }).catch(function(err){
+      return respondQuery(res, err, null, 'Courses', 'Retrieved');
+  });
 }
 
 exports.listGivenCourses = function(req,res,next){  
-  const id = req.user._id;
-  Course.find({instructor: id}).select("_id name").exec()
-  .then(function(err, course){
-    return respondQuery(res, err, course, 'Courses', 'Retrieved');
-  })
+  const id = req.body._id;
+  Course.find({instructors: id}).select("_id name").exec()
+  .then(function(courses){
+    return respondQuery(res, null, courses.length > 0 ? courses : null, 'Courses', 'Retrieved');
+  }).catch(function(err){
+      return respondQuery(res, err, null, 'Courses', 'Retrieved');
+  });
 }

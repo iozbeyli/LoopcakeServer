@@ -90,7 +90,21 @@ CourseSchema.statics.parseJSON = function(body) {
     if(body.properties) object.properties = properties;
 
     object = new this(object);
-    console.log(object);
+    if(repOK(object))
+      return object;
+    else
+      return null;
+};
+
+CourseSchema.methods.setBy = function(body) {
+    let object = {
+      name:         body.name ? body.name : this.name,
+      abbreviation: body.abbreviation ? body.abbreviation : this.abbreviation,
+      code:         body.code ? body.code : this.code,
+      department:   body.department ? body.department : this.department
+    };
+
+    object = this.set(object);
     if(repOK(object))
       return object;
     else

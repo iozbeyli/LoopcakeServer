@@ -32,7 +32,7 @@ exports.register = function (req, res, next) {
 
 exports.edit = function (req, res, next) {
   console.log("Edit User Request Recevied");
-  let id =  req.user._id;
+  let id =  req.body._id;
   if (isEmpty(id) || req.body.hash || req.body.isAdmin)
     return respondBadRequest(res);
 
@@ -44,11 +44,11 @@ exports.edit = function (req, res, next) {
     if(!user.canAccess(req.user, false))
       return console.log("err")
 
-    return user.set(req.body).save()
+    return user.setBy(req.body).save()
   }).then(function(saved){
       data = {
         token: saved.generateJwt(),
-        _id:   saved._id,
+        user:  saved._id,
         admin: saved.isAdmin,
         type:  saved.userType
       };
