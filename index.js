@@ -23,7 +23,7 @@ mongoose.connection.once('open', function () {
   // all set!
 })
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 router(app);

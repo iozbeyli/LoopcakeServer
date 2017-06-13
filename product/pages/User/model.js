@@ -21,7 +21,7 @@ const UserSchema = new Schema({
     university:   {type: mongoose.SchemaTypes.ObjectId, ref:'University'},
     keys:        [{type: String}],
     photo:        {type: mongoose.SchemaTypes.ObjectId},
-    hash:         {type: String, required: true, select: false},
+    hash:         {type: String, select: false},
     properties:   {type: Properties}
 });
 
@@ -72,7 +72,6 @@ UserSchema.statics.parseJSON = function(body) {
     if(body.properties) object.properties = properties;
 
     object = new this(object);
-    console.log(object);
     if(repOK(object))
       return object;
     else
@@ -81,7 +80,7 @@ UserSchema.statics.parseJSON = function(body) {
 
 
 const repOK = function(object) {
-  return !(isEmpty(object.email)    || isEmpty(object.name) || isEmpty(object.hash) ||
+  return !(isEmpty(object.email)    || isEmpty(object.name) || 
            isEmpty(object.surname)  || !(types.indexOf(object.userType) > -1) || !PropertiesModel.repOK(object.properties))
 };
 

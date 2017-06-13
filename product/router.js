@@ -19,5 +19,5 @@ module.exports = function(app) {
   //projectRoutes(app);
   courseRoutes(app);
   //groupRoutes(app);
-  //fileRoutes(app);
+  fileRoutes(app);
 }
