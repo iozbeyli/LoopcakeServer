@@ -3,7 +3,6 @@ const utility = require('./../../utility/utility.js');
 const jwt = require('express-jwt');
 const bcrypt = require('bcrypt');
 const config = require('./../../config.json');
-const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
 const respond = utility.respond;
 const respondQuery = utility.respondQuery;
@@ -14,6 +13,7 @@ exports.register = function (req, res, next) {
   console.log(req.body)
     if (isEmpty(req.body.password))
       return respondBadRequest(res);
+      
   bcrypt.hash(req.body.password, rounds)
   .then(function (hash) {
     req.body.hash = hash;
@@ -22,7 +22,6 @@ exports.register = function (req, res, next) {
     if (!data)
       return respondBadRequest(res);
 
-    data.properties.owner = data._id;
     data.save((err) => {
       return respondQuery(res, err, data._id, 'New User', 'Registered');
     });

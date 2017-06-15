@@ -42,7 +42,7 @@ UniversitySchema.methods.addDepartment = function(body) {
   return this;
 };
 
-UniversitySchema.statics.parseJSON = function(body) {
+UniversitySchema.statics.parseJSON = function(body, user) {
 
     let object = {
       name:          body.name          || null,
@@ -51,6 +51,7 @@ UniversitySchema.statics.parseJSON = function(body) {
       properties:   {}
     };
 
+    object.properties.owner = user._id;
     object = new this(object);
     if(repOK(object))
       return object;

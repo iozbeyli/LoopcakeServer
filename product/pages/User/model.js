@@ -72,6 +72,7 @@ UserSchema.statics.parseJSON = function(body) {
     if(body.properties) object.properties = properties;
 
     object = new this(object);
+    object.properties.owner = object._id;
     if(repOK(object))
       return object;
     else

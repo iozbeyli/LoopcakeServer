@@ -26,21 +26,23 @@ const instructor = function(req, res, next){
 module.exports = function (app) {
     const routes = express.Router();
 
-    routes.post('/create',   controller.create);
-    routes.post('/edit',     controller.edit);
-    //routes.post('/remove',   query.remove(model, 'Course'));
-    routes.get('/:id',   param,    query.get);
-    routes.get('/',      param,    query.list);
+    routes.post('/create',  param,  query.create);
+    routes.post('/edit',    param,  query.edit);
+    routes.get('/:id',      param,  query.get);
+    routes.get('/',         param,  query.list);
+    routes.post('/remove',  param,  query.remove);
 
-    routes.post('/student/add',         student,      controller.addByEmail)
-    routes.post('/instructor/add',      instructor,   controller.addByEmail)
-    routes.post('/student/remove',      student,      controller.removeById)
-    routes.post('/instructor/remove',   instructor,   controller.removeById)
+    routes.post('/student/add',         student,      controller.addUserByEmail)
+    routes.post('/instructor/add',      instructor,   controller.addUserByEmail)
+    routes.post('/student/remove',      student,      controller.removeUserById)
+    routes.post('/instructor/remove',   instructor,   controller.removeUserById)
+
     routes.post('/attended',            controller.listAttendedCourses)
     routes.post('/given',               controller.listGivenCourses)
-    routes.post('/detail/section/add',  controller.addDetailSection)
-    routes.post('/detail/section/edit',  controller.editDetailSection)
-    routes.post('/detail/section/remove',  controller.removeDetailSection)
+
+    routes.post('/detail/section/add',      controller.addDetailSection)
+    routes.post('/detail/section/edit',     controller.editDetailSection)
+    routes.post('/detail/section/remove',   controller.removeDetailSection)
 
     app.use('/course', routes);
 }

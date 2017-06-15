@@ -18,11 +18,11 @@ module.exports = function (app) {
     let getSelect = {};
     let listSelect = {};
 
-    routes.post('/create',            controller.create);
-    routes.post('/edit',              controller.edit);
-    //routes.post('/remove',   query.remove(model, 'University'));
-    routes.get('/:id',     param,  query.get);
-    routes.get('/',        param,  query.list);
+    routes.post('/create',  param,  query.create);
+    routes.post('/edit',    param,  query.edit);
+    routes.get('/:id',      param,  query.get);
+    routes.get('/',         param,  query.list);
+    routes.post('/remove',  param,  query.remove);
 
     routes.post('/department/create', controller.addDepartment);
     routes.post('/department/edit',   controller.editDepartment);

@@ -67,7 +67,7 @@ CourseSchema.methods.canAccess = function(user, readOnly) {
   }
 };
 
-CourseSchema.statics.parseJSON = function(body) {
+CourseSchema.statics.parseJSON = function(body, user) {
     let detail = {};
     if(body.year) detail.year = body.year;
     if(body.term) detail.term = body.term;
@@ -87,6 +87,7 @@ CourseSchema.statics.parseJSON = function(body) {
 
     if(body.properties) object.properties = properties;
 
+    object.properties.owner = user._id;
     object = new this(object);
     if(repOK(object))
       return object;

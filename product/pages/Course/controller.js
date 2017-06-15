@@ -2,50 +2,12 @@ const Course = require('./model');
 const User = require('./../User/model');
 const utility = require('./../../utility/utility.js');
 const Section = require('./../../utility/section.js').Section;
-const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
-const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
-exports.create = function (req, res, next) {
-  console.log("registration request")
-  let data = Course.parseJSON(req.body);
 
-  if (!data)
-    return respondBadRequest(res);
-
-  //data.properties.owner = req.user._id;
-
-  data.save((err) => {
-    return respondQuery(res, err, data, 'New Course', 'Created');
-  });
-
-};
-
-exports.edit = function (req, res, next) {
-  let id =  req.body._id;
-  if (isEmpty(id))
-    return respondBadRequest(res);
-
-  return Course.findById(id).exec()
-  .then(function (course) {
-    if(!course)
-      return null;
-
-    if(!course.canAccess(req.user, false))
-      return console.log("err")
-
-    return course.setBy(req.body).save()
-  }).then(function(data){
-    return respondQuery(res, null, data, 'Course', 'Edited');
-  }).catch(function(err){
-    return respondQuery(res, err, null, 'Course', 'Edited');
-  });
-}
-
-
-exports.addByEmail = function(req,res,next){
+exports.addUserByEmail = function(req,res,next){
   var users = req.body.users;
   var courseid = req.body.courseid;
   let course;
@@ -84,7 +46,7 @@ exports.addByEmail = function(req,res,next){
   });
 };
 
-exports.removeById = function(req,res,next){
+exports.removeUserById = function(req,res,next){
   var user = req.body.user;
   var courseid = req.body.courseid;
   let tag = "";

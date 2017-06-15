@@ -44,7 +44,7 @@ AnnouncementSchema.methods.canAccess = function(user, readOnly) {
   })
 };
 
-AnnouncementSchema.statics.parseJSON = function(body) {
+AnnouncementSchema.statics.parseJSON = function(body, user) {
 
     let properties = {};
     if(body.readVisibility)  properties.readVisibility  = body.properties.readVisibility;
@@ -53,7 +53,7 @@ AnnouncementSchema.statics.parseJSON = function(body) {
     let object = {
       title:      body.title   || "",
       content:    body.content || "",
-      author:     body.author  || "",
+      author:     user._id  || "",
       course:     body.course  || null,
       project:    body.project || null,
       properties: properties
@@ -61,6 +61,7 @@ AnnouncementSchema.statics.parseJSON = function(body) {
 
     if(body.properties) object.properties = properties;
 
+    object.properties.owner = user._id;
     object = new this(object);
     if(repOK(object))
       return object;
