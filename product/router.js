@@ -16,7 +16,7 @@ module.exports = function(app) {
   universityRouter(app);
   announcementRouter(app);
   //repoRoutes(app);
-  //projectRoutes(app);
+  projectRoutes(app);
   courseRoutes(app);
   //groupRoutes(app);
   fileRoutes(app);

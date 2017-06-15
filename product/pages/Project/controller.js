@@ -6,56 +6,6 @@ const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
-exports.create = function (req, res, next) {
-  console.log('Project Creation Received');
-  console.log(req.body);
-  let object = {
-  name : req.body.name,
-  details : req.body.details,
-  courseID : req.body.courseID,
-  maxGroupSize : req.body.maxGroupSize,
-  deadline : new Date (req.body.deadline)
-  };
-
-  if (isEmpty(object.name))
-    return respondBadRequest(res);
-
-  const data = new model(object);
-  data.save((err) => {
-    return respondQuery(res, err, data._id, 'New Project', 'Created');
-  });
-
-};
-
-exports.edit = function (req, res, next) {
-  console.log("Edit Project Request Recevied");
-  let query = {
-    _id: req.body._id
-  };
-  let upt = {
-    set: {
-      name : req.body.name,
-      details : req.body.details,
-      maxGroupSize : req.body.maxGroupSize,
-      deadline : new Date (req.body.deadline)
-    }
-  };
-
-  if (isEmpty(query._id) || isEmpty(upt.name))
-    return respondBadRequest(res);
-
-  model.findByIdAndUpdate(query, upt, {
-      new: true
-    },
-    function (err, data) {
-      return respondQuery(res, err, data._id, 'Project', 'Edited');
-    });
-};
-
-
-
-
-/*-------*/
 exports.updateChecklist = function(req,res,next){
   var operation = req.body.operation;
   console.log("Update-Checkpoint request recieved. Operation:  "+ operation);
