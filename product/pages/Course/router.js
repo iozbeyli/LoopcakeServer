@@ -32,12 +32,15 @@ module.exports = function (app) {
     routes.get('/:id',   param,    query.get);
     routes.get('/',      param,    query.list);
 
-    routes.post('/student/add',    student,      controller.addByEmail)
-    routes.post('/instructor/add', instructor,   controller.addByEmail)
-    routes.post('/student/remove',    student,      controller.removeById)
-    routes.post('/instructor/remove', instructor,   controller.removeById)
-    routes.post('/attended',   controller.listAttendedCourses)
-    routes.post('/given',   controller.listGivenCourses)
+    routes.post('/student/add',         student,      controller.addByEmail)
+    routes.post('/instructor/add',      instructor,   controller.addByEmail)
+    routes.post('/student/remove',      student,      controller.removeById)
+    routes.post('/instructor/remove',   instructor,   controller.removeById)
+    routes.post('/attended',            controller.listAttendedCourses)
+    routes.post('/given',               controller.listGivenCourses)
+    routes.post('/detail/section/add',  controller.addDetailSection)
+    routes.post('/detail/section/edit',  controller.editDetailSection)
+    routes.post('/detail/section/remove',  controller.removeDetailSection)
 
     app.use('/course', routes);
 }

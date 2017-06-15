@@ -57,15 +57,15 @@ UserSchema.statics.parseJSON = function(body) {
     }
 
     let object = {
-      email:        body.email ? body.email : null,
-      userType:     body.userType ? body.userType : 0,
-      name:         body.name ? body.name : null,
-      surname:      body.surname ? body.surname : null,
-      username:     body.username ? body.username : null,
-      universityID: body.universityID ? body.universityID : null,
-      university:   body.university ? body.university : null,
-      photo:        body.photo ? body.photo : null,
-      hash:         body.hash ? body.hash : null,
+      email:        body.email        || null,
+      userType:     body.userType     || 0,
+      name:         body.name         || null,
+      surname:      body.surname      || null,
+      username:     body.username     || null,
+      universityID: body.universityID || null,
+      university:   body.university   || null,
+      photo:        body.photo        || null,
+      hash:         body.hash         || null,
       properties:   properties
     };
 
@@ -81,12 +81,12 @@ UserSchema.statics.parseJSON = function(body) {
 UserSchema.methods.setBy = function(body) {
 
     let object = {
-      email:        body.email ? body.email : this.email,
-      userType:     body.userType ? body.userType : this.userType,
-      name:         body.name ? body.name : this.name,
-      surname:      body.surname ? body.surname : this.surname,
-      username:     body.username ? body.username : this.username,
-      universityID: body.universityID ? body.universityID : this.universityID,
+      email:        body.email        || this.email,
+      userType:     body.userType     || this.userType,
+      name:         body.name         || this.name,
+      surname:      body.surname      || this.surname,
+      username:     body.username     || this.username,
+      universityID: body.universityID || this.universityID,
     };
 
     object = this.set(object);

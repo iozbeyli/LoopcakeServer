@@ -73,16 +73,14 @@ CourseSchema.statics.parseJSON = function(body) {
     if(body.term) detail.term = body.term;
 
     let properties = {};
-    if(body.properties){
-      if(body.properties.readVisibility)  properties.readVisibility = body.properties.readVisibility;
-      if(body.properties.writeVisibility) properties.writeVisibility = body.properties.writeVisibility;
-    }
+    if(body.readVisibility)  properties.readVisibility = body.properties.readVisibility;
+    if(body.writeVisibility) properties.writeVisibility = body.properties.writeVisibility;
 
     let object = {
-      name:         body.name ? body.name : "",
-      abbreviation: body.abbreviation ? body.abbreviation : "",
-      code:         body.code ? body.code : "",
-      department:   body.department ? body.department : null,
+      name:         body.name         || "",
+      abbreviation: body.abbreviation || "",
+      code:         body.code         || "",
+      department:   body.department   || null,
       details:      detail,
       properties:   properties
     };
@@ -98,11 +96,16 @@ CourseSchema.statics.parseJSON = function(body) {
 
 CourseSchema.methods.setBy = function(body) {
     let object = {
-      name:         body.name ? body.name : this.name,
-      abbreviation: body.abbreviation ? body.abbreviation : this.abbreviation,
-      code:         body.code ? body.code : this.code,
-      department:   body.department ? body.department : this.department
+      name:         body.name         || this.name,
+      abbreviation: body.abbreviation || this.abbreviation,
+      code:         body.code         || this.code,
+      department:   body.department   || this.department
     };
+
+    if(body.year) object.detail.year = body.year;
+    if(body.term) object.detail.term = body.term;
+    if(body.programmingLanguages) object.detail.programmingLanguages = body.programmingLanguages;
+
 
     object = this.set(object);
     if(repOK(object))
@@ -111,6 +114,11 @@ CourseSchema.methods.setBy = function(body) {
       return null;
 };
 
+CourseSchema.methods.addSection = function(body) {
+  let object = Section.parseJSON(body)
+  this.details.sections.push(object);
+  return this;
+};
 
 const repOK = function(object) {
   return !(isEmpty(object.name) || isEmpty(object.abbreviation) ||

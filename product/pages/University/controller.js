@@ -63,16 +63,17 @@ exports.addDepartment = function(req, res, next) {
 }
 
 exports.editDepartment = function(req, res, next) {
-  let id= req.body._id;
+  let universityid= req.body.universityid;
+  let departmentid= req.body.departmentid;
   if (isEmpty(id))
     return respondBadRequest(res);
   
-  University.findByDepartmentID(id)
+  University.findById(universityid).exec()
   .then(function(uni){
     if(!uni)
       null;
     
-    let department = uni.departments.id(id);
+    let department = uni.departments.id(departmentid);
     department.set(req.body)
     uni.save();
 

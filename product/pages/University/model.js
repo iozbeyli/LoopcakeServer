@@ -45,9 +45,9 @@ UniversitySchema.methods.addDepartment = function(body) {
 UniversitySchema.statics.parseJSON = function(body) {
 
     let object = {
-      name:        body.name ? body.name : null,
-      abbreviation:     body.abbreviation ? body.abbreviation : null,
-      country:         body.country ? body.country : null,
+      name:          body.name          || null,
+      abbreviation:  body.abbreviation  || null,
+      country:       body.country       || null,
       properties:   {}
     };
 
@@ -62,9 +62,9 @@ UniversitySchema.statics.parseJSON = function(body) {
 UniversitySchema.methods.setBy = function(body) {
 
     let object = {
-      name:        body.name ? body.name : this.name,
-      abbreviation:     body.abbreviation ? body.abbreviation : this.abbreviation,
-      country:         body.country ? body.country : this.country,
+      name:           body.name         || this.name,
+      abbreviation:   body.abbreviation || this.abbreviation,
+      country:        body.country      || this.country,
     };
 
     this.set(object);

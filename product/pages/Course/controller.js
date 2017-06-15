@@ -1,6 +1,7 @@
 const Course = require('./model');
 const User = require('./../User/model');
 const utility = require('./../../utility/utility.js');
+const Section = require('./../../utility/section.js').Section;
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
 const respond = utility.respond;
@@ -134,5 +135,58 @@ exports.listGivenCourses = function(req,res,next){
     return respondQuery(res, null, courses.length > 0 ? courses : null, 'Courses', 'Retrieved');
   }).catch(function(err){
       return respondQuery(res, err, null, 'Courses', 'Retrieved');
+  });
+}
+
+exports.addDetailSection = function (req,res,next){
+    const id = req.body._id;
+    Course.findById(id).exec()
+    .then(function(course){
+      return course.addSection(req.body).save();
+    }).then(function(course){
+      return respondQuery(res, null, course, 'Section', 'Added');
+    }).catch(function(err){
+      return respondQuery(res, err, null, 'Section', 'Added');
+    });
+}
+
+exports.editDetailSection = function(req, res, next) {
+  let courseid= req.body.courseid;
+  let sectionid= req.body.sectionid;
+  if (isEmpty(courseid) || isEmpty(sectionid))
+    return respondBadRequest(res);
+  
+  Course.findById(courseid).exec()
+  .then(function(course){
+    if(!course)
+      null;
+    
+    let section = course.details.sections.id(sectionid);
+    Section.setBy(section, req.body);
+    course.save();
+
+    return respondQuery(res, null, section, "Section", 'Edited');
+  }).catch(function(err){
+    return respondQuery(res, err, null, "Section", 'Found');
+  });
+}
+
+exports.removeDetailSection = function(req, res, next) {
+  let courseid= req.body.courseid;
+  let sectionid= req.body.sectionid;
+  if (isEmpty(courseid) || isEmpty(sectionid))
+    return respondBadRequest(res);
+  
+  Course.findById(courseid).exec()
+  .then(function(course){
+    if(!course)
+      null;
+    
+    let section = course.details.sections.pull(sectionid);
+    course.save();
+
+    return respondQuery(res, null, course, "Section", 'Removed');
+  }).catch(function(err){
+    return respondQuery(res, err, null, "Section", 'Found');
   });
 }
