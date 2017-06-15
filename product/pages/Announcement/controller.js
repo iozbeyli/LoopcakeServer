@@ -1,4 +1,4 @@
-const model = require('./model');
+const Announcement = require('./model');
 const utility = require('./../../utility/utility.js');
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
@@ -7,21 +7,19 @@ const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
 exports.create = function (req, res, next) {
-  console.log('Announcement Creation Received');
-  console.log(req.body);
-  let object = {
-    title:    req.body.title,
-    content:  req.body.content,
-    author:   req.user._id,
-    course:   req.body.course
-  };
+  console.log("Announce request")
+  req.user = {};
+  req.user._id = req.body.userid;
+  req.body.author = req.user._id;
+  let data = Announcement.parseJSON(req.body);
 
-  if (isEmpty(object.title) || isEmpty(object.course))
+  if (!data)
     return respondBadRequest(res);
-    
-  const data = new model(object);
+
+  //data.properties.owner = req.user._id;
+
   data.save((err) => {
-    return respondQuery(res, err, data._id, 'New Announcement', 'Created');
+    return respondQuery(res, err, data, 'New Announcement', 'Created');
   });
 
 };
