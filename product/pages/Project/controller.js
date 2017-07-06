@@ -1,4 +1,4 @@
-const model = require('./model');
+const Project = require('./model');
 const utility = require('./../../utility/utility.js');
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
@@ -6,114 +6,68 @@ const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
-exports.updateChecklist = function(req,res,next){
-  var operation = req.body.operation;
-  console.log("Update-Checkpoint request recieved. Operation:  "+ operation);
-  if(!operation){
-    console.log("success: false, details: operation was not set!");
-    return res.status(200).send({"success":false, "detail": "operation was not set!"});
-  }
+exports.addCheckpoint = function(req, res, next) {
+  let id =  req.body._id;
+  if (isEmpty(id) || isEmpty(req.body.label) || isEmpty(req.body.point))
+    return respondBadRequest(res);
 
-  if(operation < 1 || operation > 4){
-    console.log("success: false, details: operation was wrong!");
-    return res.status(200).send({"success":false, "detail": "operation was wrong!"});
-  }
+  return Project.findById(id).exec()
+  .then(function (project) {
+    if(!project)
+      return null;
+    
+    if(!project.canAccess(req.user, false))
+      return console.log("err")
 
-  switch(operation) {
-    case "1":
-      var checkpoints = req.body.checkpoints;
-      var projectID = req.body.projectid;
-      for (var i = 0; i < checkpoints.length; i++) {
-        var label = checkpoints[i].label;
-        var point = checkpoints[i].point;
-        var details = "dummy";
+    return project.addCheckpoint(req.body).save()
+  }).then(function(data){
 
-        console.log("Adding new checkpoint");
-        Project.findByIdAndUpdate(
-          projectID,
-          {$push: {"checklist": {"label": label, "point": point, "details":details}}},
-          {safe: true, upsert: true, new : true},
-          function(err, model) {
-              if(err) return console.log(err);
-              var length = model.checklist.length;
-              var cpid = model.checklist[length-1]._id;
-              console.log("cpid "+cpid);
-              Group.update(
-                {"project": projectID},
-                {$push: {"checklist": {"cpid": cpid, "status": false, "point": point}}},
-                {safe: true, upsert: true, new : true, multi:true},
-                function(err, result) {
-                    if(err) return console.log(err);
-              });
-        });
-      }
-      return res.status(200).send({"success":true, "details": "Checkpoints are added"});
-      break;
+    //TO DO: update groups
 
-    case "2":
-      var cpid = req.body.cpid;
-      var projectID = req.body.projectid;
-      console.log("Removing checkpoint "+cpid);
-      Project.findByIdAndUpdate(
-        projectID,
-        {$pull: {"checklist": {"_id": cpid}}},
-        {safe: true, new : true},
-        function(err, model) {
-            if(err) return console.log(err);
-            console.log("cpid "+cpid);
-            Group.update(
-              {"project": projectID},
-              {$pull: {"checklist": {"cpid": cpid}}},
-              {safe: true, new : true, multi:true},
-              function(err, result) {
-                  if(err) return console.log(err);
-
-                  return res.status(200).send({"success":true, "details": "Checkpoint is removed"});
-            });
-      });
-
-      break;
-
-    case "3":
-      var cpid = req.body.cpid;
-      var projectID = req.body.projectid;
-      var upt = {};
-      upt.label = req.body.label;
-      upt.point = req.body.point;
-      upt.details = req.body.details;
-      console.log("Edit checkpoint "+cpid);
-      console.log(upt);
-      Project.update({_id: projectID, "checklist._id": cpid},
-        {'$set': {"checklist.$.label": upt.label, "checklist.$.point": upt.point, "checklist.$.details": upt.details}},
-        {safe: true, new : true},
-        function(err, model) {
-            if(err) return console.log(err);
-            return res.status(200).send({"success":true, "details": "Checkpoints is edited"});
-      });
-      break;
-
-    case "4":
-    var checkpoints = req.body.checkpoints;
-    var groupID = req.body.groupid;
-    for (var i = 0; i < checkpoints.length; i++) {
-      var cpid = checkpoints[i].cpid;
-      var status = checkpoints[i].status;
-
-      console.log("Updating statuses new checkpoint");
-      Group.update({_id: groupID, "checklist.cpid": cpid},
-        {'$set': {"checklist.$.status": status}},
-        {safe: true, new : true},
-        function(err, model) {
-            if(err) return console.log(err);
-        });
-    }
-    return res.status(200).send({"success":true, "details": "Checkpoints are updated"});
-      break;
-    default:
-
-  }
+    return respondQuery(res, null, data, 'Checkpoint(s)', 'Created');
+  }).catch(function(err){
+    return respondQuery(res, err, null, 'Checkpoint(s)', 'Created');
+  });
 }
 
+exports.removeCheckpoint = function(req, res, next) {
+  let projectid= req.body.projectid;
+  let checkpointid= req.body.checkpointid;
+  if (isEmpty(projectid) || isEmpty(checkpointid))
+    return respondBadRequest(res);
+  
+  return Project.findById(projectid).exec()
+  .then(function(project){
+    if(!project)
+      return null;
+    
+    project.checklist.pull(checkpointid);
+    project.save();
+
+    //TO DO: update group
+
+    return respondQuery(res, null, project, "Checkpoint", 'Removed');
+
+  }).catch(function(err){
+    return respondQuery(res, err, null, "Checkpoint", 'Removed');
+  });
+}
+
+exports.getChecklist = function(req, res, next) {
+  let id= req.params.id;
+  if (isEmpty(id))
+    return respondBadRequest(res);
+  
+  return Project.findById(id).exec()
+  .then(function(project){
+    
+    let cl = null;
+    if(project) cl = project.checklist;
+    return respondQuery(res, null, cl, "Checklist", 'Found');
+
+  }).catch(function(err){
+    return respondQuery(res, err, null, "Checklist", 'Found');
+  });
 
 
-
+}

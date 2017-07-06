@@ -1,13 +1,22 @@
 const mongoose = require('mongoose'),
       Schema = mongoose.Schema,
-      Folder = require('./../../utility/FileOp/folder.js').Folder,
-      Checkpoint = require('./../../utility/Tools/Checkpoint.js').Checkpoint;
+      Folder = require('./../../utility/FileOp/folder.js').Folder;
 const Section = require('./../../utility/section.js').Section;
-const Properties = require('./../../utility/Tools/Properties.js').Properties;
+const PropertiesModel = require('./../../utility/Tools/Properties.js');
+const Properties = PropertiesModel.Properties;
+const utility = require('./../../utility/utility.js');
+const isEmpty = utility.isEmpty;
+const Auth = require('./../User/Auth.js');
 
 const DetailsSchema = new mongoose.Schema({
   sections:  [Section]
 });
+
+const CheckpointSchema = new Schema({
+    label: {type: String},
+    point: {type: Number},
+    details: {type: String}
+})
 
 const ProjectSchema = new mongoose.Schema({
   name:         {type: String, required:true},
@@ -16,10 +25,28 @@ const ProjectSchema = new mongoose.Schema({
   attachment:   [Folder],
   maxGroupSize: {type: Number,  required:true},
   deadline:     {type: Date,    required:true},
-  checklist:    [Checkpoint],
+  checklist:    [CheckpointSchema],
   properties:   {type: Properties}
 });
 
+
+ProjectSchema.methods.addCheckpoint = function(body) {
+  /*checkpoints = body.checkpoints;
+  for (var ch in this.checkpoints){
+    let object = {};
+    object.label    = body.label;
+    object.details  = body.details;
+    object.point    = body.point;
+    this.checklist.push(object);
+  }*/
+
+  let object = {};
+  object.label    = body.label;
+  object.details  = body.details;
+  object.point    = body.point;
+  this.checklist.push(object);
+  return this;
+};
 
 ProjectSchema.methods.canAccess = function(user, readOnly) {
   if(!this.properties.active())
@@ -71,7 +98,7 @@ ProjectSchema.statics.parseJSON = function(body, user) {
 };
 
 const repOK = function(object) {
-  return !(isEmpty(object.course) || isEmpty(object.deadline) || maxGroupSize < 1 ||
+  return !(isEmpty(object.course) || isEmpty(object.deadline) || object.maxGroupSize < 1 ||
            isEmpty(object.name)   || !PropertiesModel.repOK(object.properties))
 };
 

@@ -21,5 +21,9 @@ module.exports = function (app) {
     routes.get('/',         param,  query.list);
     routes.post('/remove',  param,  query.remove);
 
+    routes.post('/checkpoint/add',      controller.addCheckpoint);
+    routes.post('/checkpoint/remove',   controller.removeCheckpoint);
+    routes.get('/checklist/:id',       controller.getChecklist);
+
     app.use('/project', routes);
 }

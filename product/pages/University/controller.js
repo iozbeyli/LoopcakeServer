@@ -35,7 +35,7 @@ exports.editDepartment = function(req, res, next) {
   University.findById(universityid).exec()
   .then(function(uni){
     if(!uni)
-      null;
+      return null;
     
     let department = uni.departments.id(departmentid);
     department.set(req.body)
