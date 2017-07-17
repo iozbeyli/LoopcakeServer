@@ -9,6 +9,7 @@ const courseRoutes        = require('./pages/Course/router');
 const groupRoutes         = require('./pages/Group/router');
 const submissionRoutes    = require('./pages/Submission/router');
 const fileRoutes          = require('./file/router');
+const landingRoutes          = require('./../landing/router');
 
 
 module.exports = function(app) {
@@ -20,4 +21,5 @@ module.exports = function(app) {
   courseRoutes(app);
   //groupRoutes(app);
   fileRoutes(app);
+  landingRoutes(app);
 }
