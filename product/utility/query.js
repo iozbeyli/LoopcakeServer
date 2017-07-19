@@ -4,16 +4,16 @@ const isEmpty = utility.isEmpty;
 const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
+const winston = require('winston');
 
 exports.get = function(req, res, next){
     let collection = req.args.model;
     let select = req.args.select;
     let logType = req.args.logType;
-         console.log(' Get request received');
         query = {
         _id: req.params.id
         };
-
+        winston.log('debug', logType+ ' Get request received');
         if (isEmpty(query._id))
             return respondBadRequest(res);
 
@@ -28,7 +28,7 @@ exports.list = function(req, res, next){
   let collection = req.args.model;
   let select = req.args.listSelect;
   let logType = req.args.logType;
-  console.log(logType+ ' List request received');
+  winston.log('debug', logType+ ' List request received');
   let options = parseQueryOptions(req);
 
   if (options.skip < 0 || options.limit > 30)
@@ -43,7 +43,7 @@ exports.create = function (req, res, next) {
   let collection = req.args.model;
   let logType = req.args.logType;
   req.user = {_id: req.body.userid};
-  console.log(logType+ ' Create request received');
+  winston.log('debug', logType+ ' Create request received');
 
   let data = collection.parseJSON(req.body, req.user);
 
@@ -61,7 +61,7 @@ exports.edit = function (req, res, next) {
   let logType = req.args.logType;
   let id =  req.body._id;
   req.user = {_id: req.body.userid};
-  console.log(logType+ 'Edit request received');
+  winston.log('debug', logType+ ' Edit request received');
   if (isEmpty(id))
     return respondBadRequest(res);
 
@@ -71,7 +71,7 @@ exports.edit = function (req, res, next) {
       return null;
 
     if(!data.canAccess(req.user, false))
-      return console.log("err")
+      return winston.log('error', 'Can access failed', {user: req.user})
     data.setBy(req.body)
 
     return data.save()
@@ -88,7 +88,7 @@ exports.remove = function (req, res, next) {
   let logType = req.args.logType;
   let id =  req.body._id;
   req.user = {_id: req.body.userid};
-  console.log(logType+ 'Remove request received');
+  winston.log('debug', logType+ 'Remove request received');
 
   if (isEmpty(id))
     return respondBadRequest(res);
@@ -100,4 +100,3 @@ exports.remove = function (req, res, next) {
     return respondQuery(res, err, null, logType, 'Removed');
   });
 }
-

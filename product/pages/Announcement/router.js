@@ -2,13 +2,15 @@ const express = require('express');
 const controller = require('./controller');
 const query = require('./../../utility/query');
 const model = require('./model');
+const winston = require('winston');
 
 const param = function(req,res,next){
-    console.log('User request received');
+
     req.args = {model: model,
             getSelect: {},
             listSelect:{title: 1, course: 1, date: 1},
-            logType: "Announcement"
+            logType: "Announcement",
+            date: Date.now()
     }
     next();
 }

@@ -1,6 +1,11 @@
+const winston = require('winston')
+
 exports.respond = function (res, status, success, detail, data, err) {
-  console.log('success: ' + success + ', detail: ' + detail);
-  if (err) console.log(err);
+  winston.info('Response data', {
+     'success': success, 'detail': detail,
+     'status': status, 'time' : Number(Date.now() - res.rcvDate)
+  });
+  if (err) winston.log('error', 'Error in query response', err);
   return res.status(status)
     .send({
       'success': success,
@@ -24,8 +29,11 @@ exports.respondQuery = function (res, err, data, obj, sMsg) {
       status = 200;
       success = true;
     }
-  console.log('success: ' + success + ', detail: ' + detail);
-  if (err) console.log(""+err);
+    winston.info('Response data', {
+       'success': success, 'detail': detail,
+       'status': status, 'time' : Number(Date.now() - res.rcvDate)
+    });
+  if (err) winston.log('error', 'Error in query response', err);
   return res.status(status)
     .send({
       'success': success,
@@ -35,7 +43,10 @@ exports.respondQuery = function (res, err, data, obj, sMsg) {
 };
 
 exports.respondBadRequest = function (res) {
-  console.log('success: ' + false + ', detail: Bad Request');
+   winston.info('Response data', {
+      'success': false, 'detail': 'Bad Request',
+      'status': 400, 'time' : Number(Date.now() - res.rcvDate)
+   });
   return res.status(400)
     .send({
       'success': false,

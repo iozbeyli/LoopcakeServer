@@ -4,7 +4,6 @@ const query = require('./../../utility/query');
 const model = require('./model');
 
 const param = function(req,res,next){
-    console.log('List request received');
     req.args = {model: model,
             getSelect: {},
             listSelect: {_id: 1, name: 1, department: 1, code: 1, "details.year": 1, "details.term": 1},
