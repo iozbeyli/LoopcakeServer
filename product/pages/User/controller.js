@@ -10,7 +10,6 @@ const respondBadRequest = utility.respondBadRequest;
 const rounds = parseInt(config.saltRounds);
 
 exports.register = function (req, res, next) {
-  console.log(req.body)
     if (isEmpty(req.body.password))
       return respondBadRequest(res);
       
@@ -66,6 +65,8 @@ exports.login = function (req, res, next) {
 
   if (isEmpty(email) || isEmpty(password))
     return utility.respondBadRequest(res);
+  
+  let success = false;
   User.findOne({'email': email}).select("+hash").exec()
   .then(function(user){
     if(!user)
@@ -77,7 +78,7 @@ exports.login = function (req, res, next) {
     data = user;
     return  bcrypt.compare(password, user.hash)
   }).then(function(valid){
-
+    
       if (!valid) {
           detail = 'Login Failed';
           status = 401;

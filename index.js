@@ -41,7 +41,10 @@ app.use((req, res, next) => {
    next();
 })
 require('./registerWinstonStreams')(winston, [
-   log=>{if (log.level === 'error') console.error('Streamed log:', log)},
+   log=>{
+      if (log.level === 'error')
+         console.error('Streamed log:', log)
+   },
    //...
 ])
 router(app);

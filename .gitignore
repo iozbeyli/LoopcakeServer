@@ -3,3 +3,4 @@ uploads
 temp
 .remote-sync.json
 logs/
+*.log
