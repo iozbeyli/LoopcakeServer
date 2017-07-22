@@ -2,3 +2,4 @@ node_modules/
 uploads
 temp
 .remote-sync.json
+logs/

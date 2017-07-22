@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const Grid = require('gridfs-stream');
 const winston = require('winston');
-require('./configureWinston')(winston);
 
 const router = require('./product/router');
 const config = require('./product/config.json');
@@ -29,6 +28,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 
+// Logger setup
+require('./configureWinston')(winston);
 app.use((req, res, next) => {
    winston.info('Request received', {
       route: req.originalUrl,
@@ -39,6 +40,10 @@ app.use((req, res, next) => {
    res.rcvDate = Date.now()
    next();
 })
+require('./registerWinstonStreams')(winston, [
+   log=>{if (log.level === 'error') console.error('Streamed log:', log)},
+   //...
+])
 router(app);
 
 app.listen(config.port);
