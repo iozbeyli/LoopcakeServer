@@ -15,8 +15,8 @@ const param = function(req,res,next){
 }
 
 const sendSlack = function(req,res,next){
-    let message = "From:\n*"+req.body.name+  " " +req.body.surname+ "* `<" +req.body.email+ ">`\n" 
-                  +req.body.type+ " - " +req.body.institution+ " (" +req.body.country+ ")\n"+
+    let message = "From:\n*"+req.body.name+ "* `<" +req.body.email+ ">`\n" 
+                  +req.body.institution+ " - " +req.body.country+ "\n"+
                   ">"+req.body.message+ "\n\n\n";
     
         request
