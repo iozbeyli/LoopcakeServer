@@ -4,5 +4,6 @@
   "JWTSecret": "g.o.r.a'ya_yaklasan_cisim",
   "JWTExpiration": "1d",
   "saltRounds": "12",
-  "adminKey":   "123456"
+  "adminKey":   "123456",
+  "slackContactWebHook": "https://hooks.slack.com/services/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"
 }
