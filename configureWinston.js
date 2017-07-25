@@ -14,10 +14,11 @@ module.exports = function (winston, path='logs') {
         // Return string will be passed to logger.
         return new Date(options.timestamp()) +' '+ options.level +': '+ (options.message ? options.message : '') +
           (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta, null, 2) : '' );
-      }
+      },
+      level: 'debug',
    };
 
-   function createRotateFile(level) {
+   /*function createRotateFile(level) {
       return new winston.transports.DailyRotateFile({
          filename: path + '/' + level + '.log',
          datePattern: 'yyyy-MM-dd.',
@@ -31,27 +32,23 @@ module.exports = function (winston, path='logs') {
 
    for (let i = 0; i < levels.length; i++) {
       transports.push(createRotateFile(levels[i]));
-   }
-   winston.configure({
-      transports: transports/*[
+   }*/
+   //transports: transports/*
+   winston.configure({transports: [
          new winston.transports.Console(config),
-
          new winston.transports.DailyRotateFile({
-            filename: './err.log',
+            filename: './logs/log',
             datePattern: 'yyyy-MM-dd.',
             prepend: true,
-            level: 'error',
-            name: 'rf'
-         }),
+            level: 'debug'
+         })/*,
          new winston.transports.DailyRotateFile({
             filename: './err.log',
             datePattern: 'yyyy-MM-dd.',
             prepend: true,
             level: 'error',
             name: 'rf2'
-         })
-      ]*/
+         })*/
+      ]
    });
-
-
 }
