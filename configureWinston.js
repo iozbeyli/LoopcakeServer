@@ -1,7 +1,6 @@
 /**
    winston: imported winston logger
-   streams: undefined or an array of callbacks
-            taking logs as the arguments
+   path: the directory logs will be stored
 */
 module.exports = function (winston, path='logs') {
    require('winston-daily-rotate-file');
@@ -37,7 +36,7 @@ module.exports = function (winston, path='logs') {
    winston.configure({transports: [
          new winston.transports.Console(config),
          new winston.transports.DailyRotateFile({
-            filename: './logs/log',
+            filename: './' + path + '/log',
             datePattern: 'yyyy-MM-dd.',
             prepend: true,
             level: 'debug'
