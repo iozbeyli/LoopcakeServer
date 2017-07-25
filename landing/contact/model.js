@@ -7,9 +7,7 @@ const isEmpty = utility.isEmpty;
 
 const ContactSchema = new Schema({
   name:         {type: String, required: true},
-  surname:      {type: String, required: true},
   email:        {type: String, required: true},
-  type:         {type: String, required: true},
   message:      {type: String},
   institution:  {type: String},
   country:      {type: String},
@@ -31,9 +29,7 @@ ContactSchema.statics.parseJSON = function(body, user) {
 
     let object = {
       name:         body.name         || "",
-      surname:      body.surname      || "",
       email:        body.email        || "",
-      type:         body.type         || "",
       message:      body.message      || "",
       institution:  body.institution  || "",
       country:      body.country      || "",
@@ -47,8 +43,7 @@ ContactSchema.statics.parseJSON = function(body, user) {
 };
 
 const repOK = function(object) {
-  return !(isEmpty(object.email) || isEmpty(object.name) || isEmpty(object.surname) ||
-           isEmpty(object.type) || !PropertiesModel.repOK(object.properties))
+  return !(isEmpty(object.email) || isEmpty(object.name) || !PropertiesModel.repOK(object.properties))
 };
 
 module.exports = mongoose.model('Contact', ContactSchema);
