@@ -42,7 +42,6 @@ exports.list = function(req, res, next){
 exports.create = function (req, res, next) {
   let collection = req.args.model;
   let logType = req.args.logType;
-  req.user = {_id: req.body.userid};
   winston.log('debug', logType+ ' Create request received');
 
   let data = collection.parseJSON(req.body, req.user);
@@ -60,7 +59,6 @@ exports.edit = function (req, res, next) {
   let collection = req.args.model;
   let logType = req.args.logType;
   let id =  req.body._id;
-  req.user = {_id: req.body.userid};
   winston.log('debug', logType+ ' Edit request received');
   if (isEmpty(id))
     return respondBadRequest(res);
@@ -87,7 +85,6 @@ exports.remove = function (req, res, next) {
   let collection = req.args.model;
   let logType = req.args.logType;
   let id =  req.body._id;
-  req.user = {_id: req.body.userid};
   winston.log('debug', logType+ 'Remove request received');
 
   if (isEmpty(id))

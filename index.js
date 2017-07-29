@@ -9,6 +9,7 @@ const winston = require('winston');
 
 const router = require('./product/router');
 const config = require('./product/config.json');
+const auth   = require('./product/pages/User/Auth').auth;
 
 
 mongoose.Promise = global.Promise;
@@ -27,6 +28,7 @@ mongoose.connection.once('open', function () {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(auth);
 
 // Logger setup
 require('./configureWinston')(winston);
@@ -42,8 +44,8 @@ app.use((req, res, next) => {
 })
 require('./registerWinstonStreams')(winston, [
    log=>{
-      if (log.level === 'error')
-         console.error('Streamed log:', log)
+      //if (log.level === 'error')
+         //console.error('Streamed log:', log)
    },
    //...
 ])

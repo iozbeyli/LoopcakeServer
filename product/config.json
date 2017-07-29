@@ -5,5 +5,10 @@
   "JWTExpiration": "1d",
   "saltRounds": "12",
   "adminKey":   "123456",
-  "slackContactWebHook": "https://hooks.slack.com/services/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"
+  "slackContactWebHook": "https://hooks.slack.com/services/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",
+  "globalPaths": [
+    "/user/login",
+    "/user/register",
+    "/landing/contact/create"
+  ]
 }
