@@ -29,6 +29,7 @@ module.exports = function (app) {
     routes.post('/edit',    param,  query.edit);
     routes.get('/:id',      param,  query.get);
     routes.get('/',         param,  query.list);
+    routes.get('/:id/summary',  controller.summarify);
     routes.post('/remove',  param,  query.remove);
 
     routes.post('/student/add',         student,      controller.addUserByEmail)
