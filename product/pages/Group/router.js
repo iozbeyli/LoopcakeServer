@@ -21,5 +21,7 @@ module.exports = function (app) {
     routes.get('/',         param,  query.list);
     routes.post('/remove',  param,  query.remove);
 
+    routes.post('/leave', controller.leave);
+
     app.use('/group', routes);
 }
