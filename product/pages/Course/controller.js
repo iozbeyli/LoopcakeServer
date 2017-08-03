@@ -177,11 +177,11 @@ exports.summarify = function (req, res, next) {
       return Project.find(query).select("_id name deadline").exec();
     }).then(function (projects) {
       data.projects = projects;
-      query = {_id: req.params.id, members: req.user._id};
+      query = {course: req.params.id, members: req.user._id};
 
       return Group.find(query).select("_id name project members").populate('members', userSelect).exec()
     }).then(function (groups){
-      data.myGroups = ["Not done yet"];
+      data.myGroups = [groups];
       query = {course: req.params.id};
 
       return Announcement.find(query).select("title content date").exec()

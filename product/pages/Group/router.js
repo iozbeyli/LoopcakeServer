@@ -6,7 +6,7 @@ const model = require('./model');
 const param = function(req,res,next){
     req.args = {model: model,
             getSelect: {},
-            listSelect:{name: 1, course: 1},
+            listSelect:{name: 1, course: 1, members: 1},
             logType: "Group"
     }
     next();
