@@ -19,7 +19,7 @@ module.exports = function(app) {
   //repoRoutes(app);
   projectRoutes(app);
   courseRoutes(app);
-  //groupRoutes(app);
+  groupRoutes(app);
   fileRoutes(app);
   landingRoutes(app);
 }

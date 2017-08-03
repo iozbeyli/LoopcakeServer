@@ -3,17 +3,23 @@ const controller = require('./controller');
 const query = require('./../../utility/query');
 const model = require('./model');
 
+const param = function(req,res,next){
+    req.args = {model: model,
+            getSelect: {},
+            listSelect:{name: 1, course: 1},
+            logType: "Group"
+    }
+    next();
+}
+
 module.exports = function (app) {
     const routes = express.Router();
 
-    let getSelect = {};
-    let listSelect = {_id: 1, name: 1, university: 1, code: 1, year: 1, term: 1};
+    routes.post('/create',  param,  query.create);
+    routes.post('/edit',    param,  query.edit);
+    routes.get('/:id',      param,  query.get);
+    routes.get('/',         param,  query.list);
+    routes.post('/remove',  param,  query.remove);
 
-    routes.post('/create',   controller.create);
-    routes.post('/edit',     controller.edit);
-    routes.post('/remove',   query.remove(model, 'Course'));
-    routes.get('/:id',       query.get(model, getSelect, 'Course'));
-    routes.get('/',          query.list(model, listSelect, 'Course'));
-
-    app.use('/course', routes);
+    app.use('/group', routes);
 }

@@ -1,7 +1,6 @@
 const express = require('express');
 const query = require('./../../product/utility/query');
 const model = require('./model');
-const request = require('superagent');
 const winston = require('winston');
 const config = require('./../../product/config');
 

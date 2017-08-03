@@ -39,13 +39,14 @@ exports.list = function(req, res, next){
   });
 }
 
-exports.create = function (req, res, next) {
+exports.create = async function (req, res, next) {
   let collection = req.args.model;
   let logType = req.args.logType;
   winston.log('debug', logType+ ' Create request received');
 
-  let data = collection.parseJSON(req.body, req.user);
+  let data = await collection.parseJSON(req.body, req.user);
 
+console.log("data: "+data)
   if (!data)
     return respondBadRequest(res);
 

@@ -7,7 +7,8 @@ const Properties = PropertiesModel.Properties;
 const utility = require('./../../utility/utility.js');
 const isEmpty = utility.isEmpty;
 const Auth = require('./../User/Auth.js');
-
+const Course = require('./../Course/model');
+const Project = require('./../Course/model');
 const DetailsSchema = new mongoose.Schema({
   sections:  [Section]
 });
