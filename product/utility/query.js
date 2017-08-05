@@ -9,6 +9,8 @@ const winston = require('winston');
 exports.get = function(req, res, next){
     let collection = req.args.model;
     let select = req.args.select;
+    let populateQuery = req.args.populateQuery ? req.args.populateQuery : "";
+    console.log(populateQuery);
     let logType = req.args.logType;
         query = {
         _id: req.params.id
@@ -17,7 +19,7 @@ exports.get = function(req, res, next){
         if (isEmpty(query._id))
             return respondBadRequest(res);
 
-        collection.findById(query, select, function (err, data) {
+        collection.findById(query).select(select).populate(populateQuery).exec( function (err, data) {
            return respondQuery(res, err, data, logType, 'Found');
         });
     }

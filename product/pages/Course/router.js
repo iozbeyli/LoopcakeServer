@@ -21,13 +21,21 @@ const instructor = function(req, res, next){
     next();
 }
 
+const getPopulate = function(req, res, next){
+    let userSelect = "_id name surname photo email"
+    req.args.populateQuery = [{path:'instructors', select:userSelect}, {path:'students', select:userSelect},
+    {path:'assistants', select:userSelect}
+    ]
+    next();
+}
+
 
 module.exports = function (app) {
     const routes = express.Router();
 
     routes.post('/create',  param,  query.create);
     routes.post('/edit',    param,  query.edit);
-    routes.get('/:id',      param,  query.get);
+    routes.get('/:id',      param, getPopulate,  query.get);
     routes.get('/',         param,  query.list);
     routes.get('/:id/summary',  controller.summarify);
     routes.post('/remove',  param,  query.remove);
