@@ -111,6 +111,8 @@ exports.listGivenCourses = function (req, res, next) {
 
 exports.addDetailSection = function (req, res, next) {
   const id = req.body._id;
+  if (isEmpty(id))
+    return respondBadRequest(res);
   Course.findById(id).exec()
     .then(function (course) {
       return course.addSection(req.body).save();
@@ -162,6 +164,44 @@ exports.removeDetailSection = function (req, res, next) {
     });
 }
 
+//TODO: Documentation
+exports.addEventToCalendar = function (req, res, next) {
+  const id = req.body._id;
+
+  if (isEmpty(id))
+    return respondBadRequest(res);
+
+  Course.findById(id).exec()
+    .then(function (course) {
+      return course.addEvent(req.body).save();
+    }).then(function (course) {
+      return respondQuery(res, null, course, 'Event', 'Added');
+    }).catch(function (err) {
+      return respondQuery(res, err, null, 'Event', 'Added');
+    });
+}
+
+//TODO: Documentation
+exports.removeEventFromCalendar = function (req, res, next) {
+  let courseid = req.body.courseid;
+  let eventid = req.body.eventid;
+  if (isEmpty(courseid) || isEmpty(eventid))
+    return respondBadRequest(res);
+
+  Course.findById(courseid).exec()
+    .then(function (course) {
+      if (!course)
+        return null;
+
+      let section = course.calendar.pull(eventid);
+      course.save();
+
+      return respondQuery(res, null, course, "Event", 'Removed');
+    }).catch(function (err) {
+      return respondQuery(res, err, null, "Event", 'Found');
+    });
+}
+
 exports.summarify = function (req, res, next) {
     let query = {_id: req.params.id};
     let userSelect = "_id name surname photo email"
@@ -171,7 +211,9 @@ exports.summarify = function (req, res, next) {
     Course.findById(query).select("-students -assistants -department -properties").populate('instructors', userSelect).exec()
     .then(function (course) {
       if(!course) return respondQuery(res, null, data, "Course Summary", 'Found');
-      data.course = course;
+      data.calendar   = course.calendar;
+      course.calendar = undefined;
+      data.course     = course;
       query = {course: req.params.id};
 
       return Project.find(query).select("_id name deadline").exec();
@@ -188,7 +230,6 @@ exports.summarify = function (req, res, next) {
     }).then(function (announcements) {
       data.announcements = announcements;
 
-      data.calender = ["Not done yet"];
       data.grades = ["Not done yet"];
       
       return respondQuery(res, null, data, "Course Summary", 'Found');

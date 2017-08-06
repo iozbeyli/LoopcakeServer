@@ -6,6 +6,7 @@ const respond = utility.respond;
 const respondQuery = utility.respondQuery;
 const respondBadRequest = utility.respondBadRequest;
 
+// TODO: Testing, Documentation
 exports.addCheckpoint = function(req, res, next) {
   let id =  req.body._id;
   if (isEmpty(id) || isEmpty(req.body.label) || isEmpty(req.body.point))
@@ -22,7 +23,8 @@ exports.addCheckpoint = function(req, res, next) {
     return project.addCheckpoint(req.body).save()
   }).then(function(data){
 
-    //TO DO: update groups
+    let newCPID = data.checklist[data.checklist.length-1]._id;
+    Group.update({course: id}, {$push: {checklist: {cpid: newCPID}}}, {multi: true}).exec();
 
     return respondQuery(res, null, data, 'Checkpoint(s)', 'Created');
   }).catch(function(err){
@@ -30,6 +32,7 @@ exports.addCheckpoint = function(req, res, next) {
   });
 }
 
+// TODO: Testing, Documentation
 exports.removeCheckpoint = function(req, res, next) {
   let projectid= req.body.projectid;
   let checkpointid= req.body.checkpointid;
@@ -44,7 +47,7 @@ exports.removeCheckpoint = function(req, res, next) {
     project.checklist.pull(checkpointid);
     project.save();
 
-    //TO DO: update group
+    Group.update({course: id}, {$pull: {checklist: {cpid: newCPID}}}, {multi: true}).exec();
 
     return respondQuery(res, null, project, "Checkpoint", 'Removed');
 

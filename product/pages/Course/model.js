@@ -17,6 +17,11 @@ const DetailsSchema = new mongoose.Schema({
   relatedCourses:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'Course'}],
 });
 
+const EventSchema = new mongoose.Schema({
+  label:  {type: String},
+  date:   {type: Date}
+});
+
 const CourseSchema = new mongoose.Schema({
   name:         {type: String, required:true},
   abbreviation: {type: String, required:true},
@@ -27,7 +32,8 @@ const CourseSchema = new mongoose.Schema({
   assistants:  [{type: mongoose.SchemaTypes.ObjectId, ref: 'User'}],
   details:      {type: DetailsSchema},
   syllabus:     {type: mongoose.SchemaTypes.ObjectId},
-  attachments: [Folder],
+  calendar:     [EventSchema],
+  attachments:  [Folder],
   properties:   Properties
 });
 
@@ -66,6 +72,16 @@ CourseSchema.methods.canAccess = function(user, readOnly) {
       return false;
   }
 };
+
+
+CourseSchema.methods.addEvent = function(body) {
+  let object = {};
+  object.label = body.label;
+  object.date  = body.date;
+  this.calendar.push(object);
+  return this;
+};
+
 
 CourseSchema.statics.parseJSON = function(body, user) {
     let detail = {};

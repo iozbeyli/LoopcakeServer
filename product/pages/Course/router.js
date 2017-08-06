@@ -37,8 +37,9 @@ module.exports = function (app) {
     routes.post('/edit',    param,  query.edit);
     routes.get('/:id',      param, getPopulate,  query.get);
     routes.get('/',         param,  query.list);
-    routes.get('/:id/summary',  controller.summarify);
     routes.post('/remove',  param,  query.remove);
+
+    routes.get('/:id/summary',  controller.summarify);
 
     routes.post('/student/add',         student,      controller.addUserByEmail)
     routes.post('/instructor/add',      instructor,   controller.addUserByEmail)
@@ -51,6 +52,9 @@ module.exports = function (app) {
     routes.post('/detail/section/add',      controller.addDetailSection)
     routes.post('/detail/section/edit',     controller.editDetailSection)
     routes.post('/detail/section/remove',   controller.removeDetailSection)
+    
+    routes.post('/calendar/add',        controller.addEventToCalendar)
+    routes.post('/calendar/remove',     controller.removeEventFromCalendar)
 
     app.use('/course', routes);
 }
