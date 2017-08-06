@@ -1,4 +1,5 @@
 const Project = require('./model');
+const Group   = require('./../Group/model');
 const utility = require('./../../utility/utility.js');
 const parseQueryOptions = utility.parseQueryOptions;
 const isEmpty = utility.isEmpty;
@@ -24,7 +25,7 @@ exports.addCheckpoint = function(req, res, next) {
   }).then(function(data){
 
     let newCPID = data.checklist[data.checklist.length-1]._id;
-    Group.update({course: id}, {$push: {checklist: {cpid: newCPID}}}, {multi: true}).exec();
+    Group.update({project: id}, {$push: {checklist: {cpid: newCPID}}}, {multi: true}).exec();
 
     return respondQuery(res, null, data, 'Checkpoint(s)', 'Created');
   }).catch(function(err){
@@ -47,7 +48,7 @@ exports.removeCheckpoint = function(req, res, next) {
     project.checklist.pull(checkpointid);
     project.save();
 
-    Group.update({course: id}, {$pull: {checklist: {cpid: newCPID}}}, {multi: true}).exec();
+    Group.update({project: projectid}, {$pull: {checklist: {cpid: checkpointid}}}, {multi: true}).exec();
 
     return respondQuery(res, null, project, "Checkpoint", 'Removed');
 

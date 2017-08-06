@@ -103,14 +103,12 @@ const GroupSchema = new mongoose.Schema({
     const model = this;
     let cl = await getChecklist(object.project)
 
-    console.log("cl"+ cl);
-
     object = new model(object);
     for (var index = 0; index < cl.length; index++) {
       var element = cl[index]._id;
       object.checklist.push({cpid: element})
     }
-    console.log(object)
+
     if(true)
       return object;
     else
