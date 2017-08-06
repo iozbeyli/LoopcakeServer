@@ -7,8 +7,8 @@ const winston = require('winston');
 const param = function(req,res,next){
 
     req.args = {model: model,
-            getSelect: {},
-            listSelect:{title: 1, course: 1, date: 1},
+            getSelect: {}, 
+            listSelect:{title: 1, course: 1, content: 1, date: 1},
             logType: "Announcement",
             date: Date.now()
     }
