@@ -1,0 +1,18 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTNlYmZjODA3NDAyYjE5ZGNkZTQ3NmQiLCJuYW1lIjoiTWVobWV0IEJlcmsiLCJzdXJuYW1lIjoiR8O8csOnYXkiLCJ1c2VybmFtZSI6bnVsbCwidXNlclR5cGUiOjAsImtleXMiOltdLCJ1bml2ZXJzaXR5SUQiOm51bGwsInVuaXZlcnNpdHkiOiI1OTQwMDg4NTZiZTQ2ZDRhYzhlYjM1ZGUiLCJpYXQiOjE1MDIyMDEzMTQsImV4cCI6MTUwMjI4NzcxNH0.vFCZ_8M3wx9MdSzSqa2unUUY48yUfry83STuPCLhEaw
+
+####
+GET http://api.loopcake.com/user
+Authorization: Bearer {{token}}
+
+####
+
+POST http://api.loopcake.com/user/login
+Content-Type: application/json
+
+{
+    "email": "mehmetgurcay@ku.edu.tr",
+    "password": "123456"
+}
+
+
