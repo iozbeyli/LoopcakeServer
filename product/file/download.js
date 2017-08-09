@@ -1,25 +1,20 @@
-const busboyBodyParser = require('busboy-body-parser');
-const fs = require('fs');
-const request = require('superagent');
+const utility = require('./../utility/utility.js');
+const parseQueryOptions = utility.parseQueryOptions;
+const isEmpty = utility.isEmpty;
+const respond = utility.respond;
+const respondQuery = utility.respondQuery;
+const respondBadRequest = utility.respondBadRequest;
 
-exports.get = function(req,res,next){
-  console.log("Download request recieved.");
-  console.log(req.query);
-
+exports.get = function (req, res, next) {
   gfs.exist(req.query, function (err, found) {
-  if (err) {
-    console("Error on exists");
-    consloe(err);
-    return res.send(err);
-  }
-  if(found){
-    console.log('File exists');
-    var readstream = gfs.createReadStream(req.query);
-    readstream.pipe(res);
-  }else{
-    console.log("success: false, details: File does not exist.");
-    return res.status(200).send({"success":false, "details": "File does not exist."});
-  }
-  });
+    if (err || !found)
+      return respondQuery(res, err, null, "File", 'Found');
 
+    var readstream = gfs.createReadStream(req.query);
+    readstream.on("error", function(err) { 
+        res.end();
+        return respondQuery(res, err, null, "File", 'Found');
+    });
+    readstream.pipe(res);
+  })
 };
