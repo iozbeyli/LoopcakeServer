@@ -1,15 +1,12 @@
 const express = require('express');
 const multer  = require('multer');
 
-const download = require('./download');
+const downloader = require('./download');
+const uploader = require('./upload');
 const remove   = require('./remove');
-const uploadAV = require('./Upload/avatar');
-const uploadSA = require('./Upload/subAttach');
-const uploadSR = require('./Upload/subReport');
-const uploadSY = require('./Upload/syllabus');
-const uploadPA = require('./Upload/projectAttach');
-const uploadDEV = require('./Upload/other_dev');
 const bulk = require('./Upload/bulk');
+const User = require('./../pages/User/model');
+const fileTypes = require('./fileTypes.json');
 
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -25,13 +22,27 @@ var upload = multer({
   storage: storage
 });
 
+var profilePhotoOnStart = function(req, res, next){
+    req.args = {
+      model   : User,
+      modelid : req.user._id,
+      type    : fileTypes["profilePhoto"],
+      replace : "photo",
+      logType : "profilePhoto",
+      related : req.user._id
+    }
+
+    next();
+}
+
 module.exports = function(app) {
   const downloadRoutes = express.Router();
-  const removeRoutes = express.Router();
-  const uploadRoutes = express.Router();
-  const bulkRoutes = express.Router();
+  const removeRoutes   = express.Router();
+  const uploadRoutes   = express.Router();
+  const bulkRoutes     = express.Router();
 
-  uploadRoutes.post('/avatar',         upload.single("file"), uploadAV.upload);
+  uploadRoutes.post('/profilePhoto', upload.single("file"), profilePhotoOnStart, uploader.uploadAndReplace);
+  /*uploadRoutes.post('/profilePhoto',   upload.single("file"), uploadAV.upload);
   uploadRoutes.post('/projectAttach',  upload.single("file"), uploadPA.upload);
   uploadRoutes.post('/subAttach',      upload.single("file"), uploadSA.upload);
   uploadRoutes.post('/subReport',      upload.single("file"), uploadSR.upload);
@@ -42,7 +53,8 @@ module.exports = function(app) {
 
   removeRoutes.post('/projectAttach',      remove.projectAttach); 
   removeRoutes.post('/submissionAttach',   remove.submissionAttach); 
-  downloadRoutes.get('/', download.get);
+  */
+  downloadRoutes.get('/', downloader.get);
 
   app.use('/download', downloadRoutes);
   app.use('/upload', uploadRoutes);
