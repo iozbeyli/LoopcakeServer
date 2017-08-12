@@ -1,4 +1,5 @@
 {
-    "profilePhoto"  : 0,
-    "syllabus"      : 1 
+    "profilePhoto"      : 0,
+    "syllabus"          : 1,
+    "courseAttachment"  : 2
 }

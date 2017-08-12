@@ -49,6 +49,20 @@ const syllabusOnStart = function(req, res, next){
     next();
 }
 
+const courseAttachmentsOnStart = function(req, res, next){
+    req.args = {
+      model   : Course,
+      modelid : req.body.courseid,
+      type    : fileTypes["courseAttachment"],
+      pushTo  : "attachments",
+      logType : "courseAttachment",
+      related : req.body.courseid,
+      folder  : req.body.folder
+    }
+
+    next();
+}
+
 module.exports = function(app) {
   const downloadRoutes = express.Router();
   const removeRoutes   = express.Router();
@@ -57,11 +71,12 @@ module.exports = function(app) {
 
   uploadRoutes.post('/profilePhoto', upload.single("file"), profilePhotoOnStart, uploader.uploadAndReplace);
   uploadRoutes.post('/syllabus',     upload.single("file"), syllabusOnStart, uploader.uploadAndReplace);
-  /*uploadRoutes.post('/profilePhoto',   upload.single("file"), uploadAV.upload);
+  uploadRoutes.post('/courseAttachment',  upload.single("file"), courseAttachmentsOnStart, uploader.uploadAndPushArray);
+
+  /*
   uploadRoutes.post('/projectAttach',  upload.single("file"), uploadPA.upload);
   uploadRoutes.post('/subAttach',      upload.single("file"), uploadSA.upload);
   uploadRoutes.post('/subReport',      upload.single("file"), uploadSR.upload);
-  uploadRoutes.post('/syllabus',       upload.single("file"), uploadSY.upload);
   uploadRoutes.post('/dev',            upload.single("file"), uploadDEV.upload);
 
   bulkRoutes.post('/user',  upload.single("file"), bulk.user);
