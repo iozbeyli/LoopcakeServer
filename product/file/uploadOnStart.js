@@ -1,5 +1,6 @@
 const User = require('./../pages/User/model');
 const Course = require('./../pages/Course/model');
+const Project = require('./../pages/Project/model');
 const fileTypes = require('./fileTypes.json');
 
 exports.profilePhoto = function(req, res, next){
@@ -36,6 +37,20 @@ exports.courseAttachment = function(req, res, next){
       pushTo  : "attachments",
       logType : "courseAttachment",
       related : req.body.courseid,
+      folder  : req.body.folder
+    }
+
+    next();
+}
+
+exports.projectAttachment = function(req, res, next){
+    req.args = {
+      model   : Project,
+      modelid : req.body.projectid,
+      type    : fileTypes["projectAttachment"],
+      pushTo  : "attachments",
+      logType : "projectAttachment",
+      related : req.body.projectid,
       folder  : req.body.folder
     }
 

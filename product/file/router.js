@@ -31,18 +31,10 @@ module.exports = function(app) {
   uploadRoutes.post('/profilePhoto',      upload.single("file"),  uploadOnStart.profilePhoto,     uploader.uploadAndReplace);
   uploadRoutes.post('/syllabus',          upload.single("file"),  uploadOnStart.syllabus,         uploader.uploadAndReplace);
   uploadRoutes.post('/courseAttachment',  upload.single("file"),  uploadOnStart.courseAttachment, uploader.uploadAndPushArray);
-
-  /*
-  uploadRoutes.post('/projectAttach',  upload.single("file"), uploadPA.upload);
-  uploadRoutes.post('/subAttach',      upload.single("file"), uploadSA.upload);
-  uploadRoutes.post('/subReport',      upload.single("file"), uploadSR.upload);
-  uploadRoutes.post('/dev',            upload.single("file"), uploadDEV.upload);
+  uploadRoutes.post('/projectAttachment', upload.single("file"),  uploadOnStart.projectAttachment,uploader.uploadAndPushArray);
 
   bulkRoutes.post('/user',  upload.single("file"), bulk.user);
 
-  removeRoutes.post('/projectAttach',      remove.projectAttach); 
-  removeRoutes.post('/submissionAttach',   remove.submissionAttach); 
-  */
   downloadRoutes.get('/', downloader.get);
 
   app.use('/download', downloadRoutes);

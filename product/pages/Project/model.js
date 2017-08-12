@@ -23,7 +23,7 @@ const ProjectSchema = new mongoose.Schema({
   name:         {type: String, required:true},
   details:      {type: DetailsSchema},
   course:       {type: mongoose.SchemaTypes.ObjectId, required:true, ref: 'Course'},
-  attachment:   [Folder],
+  attachments:   [Folder],
   maxGroupSize: {type: Number,  required:true},
   deadline:     {type: Date,    required:true},
   checklist:    [CheckpointSchema],
@@ -32,14 +32,6 @@ const ProjectSchema = new mongoose.Schema({
 
 
 ProjectSchema.methods.addCheckpoint = function(body) {
-  /*checkpoints = body.checkpoints;
-  for (var ch in this.checkpoints){
-    let object = {};
-    object.label    = body.label;
-    object.details  = body.details;
-    object.point    = body.point;
-    this.checklist.push(object);
-  }*/
 
   let object = {};
   object.label    = body.label;

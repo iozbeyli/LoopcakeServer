@@ -1,5 +1,6 @@
 {
     "profilePhoto"      : 0,
     "syllabus"          : 1,
-    "courseAttachment"  : 2
+    "courseAttachment"  : 2,
+    "projectAttachment" : 3
 }
