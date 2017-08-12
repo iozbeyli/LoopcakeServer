@@ -6,6 +6,7 @@ const uploader = require('./upload');
 const remove   = require('./remove');
 const bulk = require('./Upload/bulk');
 const User = require('./../pages/User/model');
+const Course = require('./../pages/Course/model');
 const fileTypes = require('./fileTypes.json');
 
 var storage = multer.diskStorage({
@@ -22,7 +23,7 @@ var upload = multer({
   storage: storage
 });
 
-var profilePhotoOnStart = function(req, res, next){
+const profilePhotoOnStart = function(req, res, next){
     req.args = {
       model   : User,
       modelid : req.user._id,
@@ -35,6 +36,19 @@ var profilePhotoOnStart = function(req, res, next){
     next();
 }
 
+const syllabusOnStart = function(req, res, next){
+    req.args = {
+      model   : Course,
+      modelid : req.body.courseid,
+      type    : fileTypes["syllabus"],
+      replace : "syllabus",
+      logType : "Syllabus",
+      related : req.body.courseid
+    }
+
+    next();
+}
+
 module.exports = function(app) {
   const downloadRoutes = express.Router();
   const removeRoutes   = express.Router();
@@ -42,6 +56,7 @@ module.exports = function(app) {
   const bulkRoutes     = express.Router();
 
   uploadRoutes.post('/profilePhoto', upload.single("file"), profilePhotoOnStart, uploader.uploadAndReplace);
+  uploadRoutes.post('/syllabus',     upload.single("file"), syllabusOnStart, uploader.uploadAndReplace);
   /*uploadRoutes.post('/profilePhoto',   upload.single("file"), uploadAV.upload);
   uploadRoutes.post('/projectAttach',  upload.single("file"), uploadPA.upload);
   uploadRoutes.post('/subAttach',      upload.single("file"), uploadSA.upload);
