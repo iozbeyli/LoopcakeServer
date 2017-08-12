@@ -3,11 +3,9 @@ const multer  = require('multer');
 
 const downloader = require('./download');
 const uploader = require('./upload');
+const uploadOnStart = require('./uploadOnStart');
 const remove   = require('./remove');
 const bulk = require('./Upload/bulk');
-const User = require('./../pages/User/model');
-const Course = require('./../pages/Course/model');
-const fileTypes = require('./fileTypes.json');
 
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -23,45 +21,6 @@ var upload = multer({
   storage: storage
 });
 
-const profilePhotoOnStart = function(req, res, next){
-    req.args = {
-      model   : User,
-      modelid : req.user._id,
-      type    : fileTypes["profilePhoto"],
-      replace : "photo",
-      logType : "profilePhoto",
-      related : req.user._id
-    }
-
-    next();
-}
-
-const syllabusOnStart = function(req, res, next){
-    req.args = {
-      model   : Course,
-      modelid : req.body.courseid,
-      type    : fileTypes["syllabus"],
-      replace : "syllabus",
-      logType : "Syllabus",
-      related : req.body.courseid
-    }
-
-    next();
-}
-
-const courseAttachmentsOnStart = function(req, res, next){
-    req.args = {
-      model   : Course,
-      modelid : req.body.courseid,
-      type    : fileTypes["courseAttachment"],
-      pushTo  : "attachments",
-      logType : "courseAttachment",
-      related : req.body.courseid,
-      folder  : req.body.folder
-    }
-
-    next();
-}
 
 module.exports = function(app) {
   const downloadRoutes = express.Router();
@@ -69,9 +28,9 @@ module.exports = function(app) {
   const uploadRoutes   = express.Router();
   const bulkRoutes     = express.Router();
 
-  uploadRoutes.post('/profilePhoto', upload.single("file"), profilePhotoOnStart, uploader.uploadAndReplace);
-  uploadRoutes.post('/syllabus',     upload.single("file"), syllabusOnStart, uploader.uploadAndReplace);
-  uploadRoutes.post('/courseAttachment',  upload.single("file"), courseAttachmentsOnStart, uploader.uploadAndPushArray);
+  uploadRoutes.post('/profilePhoto',      upload.single("file"),  uploadOnStart.profilePhoto,     uploader.uploadAndReplace);
+  uploadRoutes.post('/syllabus',          upload.single("file"),  uploadOnStart.syllabus,         uploader.uploadAndReplace);
+  uploadRoutes.post('/courseAttachment',  upload.single("file"),  uploadOnStart.courseAttachment, uploader.uploadAndPushArray);
 
   /*
   uploadRoutes.post('/projectAttach',  upload.single("file"), uploadPA.upload);
